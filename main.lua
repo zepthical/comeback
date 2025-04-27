@@ -1,7 +1,7 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "Rayfield Example Window",
+   Name = "Zepth | Fisch",
    Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
    LoadingTitle = "Hate is making me",
    LoadingSubtitle = "insane",
@@ -50,18 +50,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local GuiService = game:GetService("GuiService")
 local Backpack = LocalPlayer:FindFirstChild("Backpack")
 
-local rod = function()
-   task.wait(0.1)
-   for i, v in pairs(Backpack:GetChildren()) do
-         if v.Name:lower():find("rod") then
-         rod = v
-      end
-   end
-end
-
 local MainTab = Window:CreateTab("Main", 4483362458)
 
-local ConfigsSection = Tab:CreateSection("Configs")
+local ConfigsSection = MainTab:CreateSection("Configs")
 
 equipitem = function(v)
 if LocalPlayer.Backpack:FindFirstChild(v) then
@@ -72,12 +63,11 @@ end
 
 local AutoEquip = MainTab:CreateToggle({
    Name = "Auto Equip Rod",
-   CurrentValue = _G.AutoEquipRod,
-   Flag = "Hate",
-   Callback = function(Value)
-       _G.AutoEquipRod = Value
+   Flags = "Hate",
+   Callback = function(v)
+       _G.AutoEquipRod = v
 
-       pcall(function()
+       spawn(function()
            while _G.AutoEuipRod do
               for i, v in pairs(Backpack:GetChildren()) do
                  if v.Name:lower():find("rod") then
@@ -94,17 +84,21 @@ local Divider1 = MainTab:CreateDivider()
 
 local AutoCast = MainTab:CreateToggle({
    Name = "Auto Cast",
-   CurrentValue = _G.AutoCast,
    Flag = "Everyone",
-   Callback = function(Value)
-       _G.AutoCast = Value
+   Callback = function(v)
+       _G.AutoCast = v
 
-       pcall(function()
+       spawn(function()
            while _G.AutoCast do task.wait()
-              if rod:FindFirstChild("values") and rod.values:FindFirstChild("casted") then
-                 local casted = rod.values.casted.Value
-                 if casted == false then
-                    rod.events.cast:FireServer(100,1)
+              for i, v in pairs(Backpack:GetChildren()) do
+                    if v.Name:lower():find("rod") then
+                        local rod = v
+                        if rod:FindFirstChild("values") and rod.values:FindFirstChild("casted") then
+                           local casted = rod.values.casted.Value
+                           if casted == false then
+                                rod.events.cast:FireServer(100,1)
+                        end
+                    end
                  end
               end
            end
