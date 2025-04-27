@@ -86,17 +86,28 @@ local AutoEquip = MainTab:CreateToggle({
 
 local Divider1 = MainTab:CreateDivider()
 
-local AutoCast = MainTab:CreateToggle({
+MainTab:CreateToggle({
    Name = "Auto Cast",
-   Flag = "Everyone",
    Callback = function(v)
-        _G.AutoCast = v
-            pcall(function()
-              while _G.AutoCast do task.wait()
-                    local Rod = Char:FindFirstChildOfClass("Tool")
-                    task.wait(.1)
-                Rod.events.cast:FireServer(100,1)
-           end
-       end)
-   end,
+      _G.AutoCast = v
+      spawn(function()
+         while _G.AutoCast do
+            task.wait(0.1)
+            Char = getCharacter()
+            local Rod = Char:FindFirstChildOfClass("Tool")
+            if Rod and Rod:FindFirstChild("events") then
+               local castEvent = Rod.events:FindFirstChild("cast")
+               if castEvent then
+                  if _G.FreezeCharacter then
+                     Char.HumanoidRootPart.Anchored = false
+                  end
+                  castEvent:FireServer(100, 1)
+                  if _G.FreezeCharacter then
+                     Char.HumanoidRootPart.Anchored = true
+                  end
+               end
+            end
+         end
+      end)
+   end
 })
