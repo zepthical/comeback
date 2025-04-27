@@ -38,6 +38,7 @@ local Window = Rayfield:CreateWindow({
 
 _G.AutoEquipRod = false
 _G.AutoCast = false
+_G.AutoShake = false
 
 --------
 
@@ -103,4 +104,36 @@ MainTab:CreateToggle({
          end
       end)
    end
+})
+
+local function shake ()
+      local PlayerGUI = LocalPlayer:FindFirstChild("PlayerGui")
+      if PlayerGUI then
+      local shakeUI = PlayerGUI:FindFirstChild("shakeui")
+      if shakeUI and shakeUI.Enabled then
+         local safezone = shakeUI:FindFirstChild("safezone")
+         if safezone then
+            local button = safezone:FindFirstChild("button")
+            if button and button:IsA("ImageButton") and button.Visible then
+               GuiService.SelectedObject = button
+               VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+               VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+            end
+         end
+      end
+   end
+end
+
+local AutoShake = MainTab:CreateToggle({
+   Name = "AutoShake",
+   Callback = function(v)
+       _G.AutoShake = v
+
+       while _G.AutoShake do
+          task.wait()
+          shake()
+          shake()
+          shake()
+       end
+   end,
 })
