@@ -93,18 +93,11 @@ MainTab:CreateToggle({
       spawn(function()
          while _G.AutoCast do
             task.wait(0.1)
-            Char = getCharacter()
             local Rod = Char:FindFirstChildOfClass("Tool")
             if Rod and Rod:FindFirstChild("events") then
                local castEvent = Rod.events:FindFirstChild("cast")
                if castEvent then
-                  if _G.FreezeCharacter then
-                     Char.HumanoidRootPart.Anchored = false
-                  end
                   castEvent:FireServer(100, 1)
-                  if _G.FreezeCharacter then
-                     Char.HumanoidRootPart.Anchored = true
-                  end
                end
             end
          end
