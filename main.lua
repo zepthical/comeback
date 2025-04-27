@@ -72,12 +72,13 @@ local AutoEquip = MainTab:CreateToggle({
                 if _G.AutoEquipRod then
                     pcall(function()
                         for i,v in pairs(LocalPlayer.Backpack:GetChildren()) do
-                            if v:IsA ("Tool") and v.Name:lower():find("rod") then
-                                equipitem(v.Name)
-                            end
+                           if v:IsA ("Tool") and v.Name:lower():find("rod") then
+                              equipitem(v.Name)
                         end
-                    end)
-                end
+                     end
+                  end)
+               end
+               task.wait()
             end
         end)
    end,
@@ -91,7 +92,7 @@ local AutoCast = MainTab:CreateToggle({
    Callback = function(v)
         _G.AutoCast = v
             pcall(function()
-              while _G.AutoCast do wait()
+              while _G.AutoCast do task.wait()
                     local Rod = Char:FindFirstChildOfClass("Tool")
                     task.wait(.1)
                 Rod.events.cast:FireServer(100,1)
