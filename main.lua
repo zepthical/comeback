@@ -172,37 +172,35 @@ local AutoReel = MainTab:CreateToggle({
   Name = "Auto Reel",
   Callback = function(v)
       _G.AutoReel = v
+      
       spawn(function()
-         while _G.AutoReel do
-            task.wait(0.01)
-            
-            local PlayerGui = LocalPlayer:FindFirstChild("PlayerGui")
-            if not PlayerGui then
-               PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
-            end
-
-                  
-            if PlayerGui then
-               for _, v in pairs(PlayerGui:GetChildren()) do
-                  if v:IsA("ScreenGui") and v.Name == "reel" then
-                     local bar = v:FindFirstChild("bar")
-                     local plrbar = v.bar:FindFirstChild("playerbar")
-                     if bar and plrbar then
-                        local reelFinished = ReplicatedStorage.events:FindFirstChild("reelfinished")
-                        plrbar.Size = UDim2.new(1, 0, 1, 0)
-                        if reelFinished then
-                           reelFinished:FireServer(100, true)
-                           task.wait(1)
-                           local rod = findRod()
-                           if rod.values.bite.Value == false then
-                              Reset()
-                           end
-                        end
-                     end
+          while _G.AutoReel do
+              task.wait(0.01)
+      
+              local PlayerGui = LocalPlayer:FindFirstChild("PlayerGui") or LocalPlayer:WaitForChild("PlayerGui")
+              if PlayerGui then
+                  local reelGui = PlayerGui:FindFirstChild("reel")
+                  if reelGui and reelGui:IsA("ScreenGui") then
+                      local bar = reelGui:FindFirstChild("bar")
+                      local playerbar = bar and bar:FindFirstChild("playerbar")
+                      if bar and playerbar then
+                          local reelFinished = ReplicatedStorage:FindFirstChild("events") and ReplicatedStorage.events:FindFirstChild("reelfinished")
+                          if reelFinished then
+                              playerbar.Size = UDim2.new(1, 0, 1, 0)
+                              reelFinished:FireServer(100, true)
+                              task.wait(1)
+      
+                              local rod = findRod()
+                              if rod and rod:FindFirstChild("values") and rod.values:FindFirstChild("bite") then
+                                  if rod.values.bite.Value == false then
+                                      Reset()
+                                  end
+                              end
+                          end
+                      end
                   end
-               end
-            end
-         end
+              end
+          end
       end)
   end,
 })
