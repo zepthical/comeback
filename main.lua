@@ -39,6 +39,7 @@ local Window = Rayfield:CreateWindow({
 _G.AutoEquipRod = false
 _G.AutoCast = false
 _G.AutoShake = false
+_G.AutoReel = false
 
 --------
 
@@ -60,6 +61,15 @@ if LocalPlayer.Backpack:FindFirstChild(v) then
     local a = LocalPlayer.Backpack:FindFirstChild(v)
         Humanoid:EquipTool(a)
     end
+end
+
+local function findRod()
+    for _, v in pairs(LocalPlayer.Backpack:GetChildren()) do
+        if v:IsA("Tool") and v.Name:lower():find("rod") then
+            return v
+        end
+    end
+    return nil
 end
 
 local AutoEquip = MainTab:CreateToggle({
@@ -125,7 +135,7 @@ local function shake ()
 end
 
 local AutoShake = MainTab:CreateToggle({
-   Name = "AutoShake",
+   Name = "Auto Shake",
    Callback = function(v)
        _G.AutoShake = v
 
@@ -134,6 +144,67 @@ local AutoShake = MainTab:CreateToggle({
           shake()
           shake()
           shake()
+          shake()
        end
    end,
 })
+
+AutoShake:Set(true)
+
+
+local function Reset()
+    -- Ensure Char is valid before trying to reset
+    local Rod = findRod()
+    if Rod and Rod:FindFirstChild("events") and Rod.events:FindFirstChild("reset") then
+        task.wait(0.1)
+        Rod.events.reset:FireServer() -- Trigger the reset event
+        -- Equip the rod again if required
+        game:GetService("ReplicatedStorage").packages.Net:FindFirstChild("RE/Backpack/Equip"):FireServer(Rod)
+        task.wait()
+        game:GetService("ReplicatedStorage").packages.Net:FindFirstChild("RE/Backpack/Equip"):FireServer(Rod)
+    else
+        warn("Rod or reset event not found!")
+    end
+end
+
+
+local AutoReel = MainTab:CreateToggle({
+  Name = "Auto Reel",
+  Callback = function(v)
+      _G.AutoReel = v
+      spawn(function()
+         while _G.AutoReel do
+            task.wait(0.01)
+            
+            local PlayerGui = LocalPlayer:FindFirstChild("PlayerGui")
+            if not PlayerGui then
+               PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+            end
+
+                  
+            if PlayerGui then
+               for _, v in pairs(PlayerGui:GetChildren()) do
+                  if v:IsA("ScreenGui") and v.Name == "reel" then
+                     local bar = v:FindFirstChild("bar")
+                     local plrbar = v.bar:FindFirstChild("playerbar")
+                     if bar and plrbar then
+                        local reelFinished = ReplicatedStorage.events:FindFirstChild("reelfinished")
+                        plrbar.Size = UDim2.new(1, 0, 1, 0)
+                        if reelFinished then
+                           reelFinished:FireServer(100, true)
+                           task.wait(1)
+                           local rod = findRod()
+                           if rod.values.bite.Value == false then
+                              Reset()
+                           end
+                        end
+                     end
+                  end
+               end
+            end
+         end
+      end)
+  end,
+})
+
+AutoReel:Set(true)
