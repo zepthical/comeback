@@ -67,16 +67,19 @@ local AutoEquip = MainTab:CreateToggle({
    Callback = function(v)
        _G.AutoEquipRod = v
 
-       spawn(function()
-           while _G.AutoEuipRod do
-              for i, v in pairs(Backpack:GetChildren()) do
-                 if v.Name:lower():find("rod") then
-                    equipitem(v)
-                 end
-              end
-              task.wait(0.4)
-           end
-       end)
+        spawn(function()
+            while _G.AutoEquipRod do
+                if _G.AutoEquipRod then
+                    pcall(function()
+                        for i,v in pairs(LocalPlayer.Backpack:GetChildren()) do
+                            if v:IsA ("Tool") and v.Name:lower():find("rod") then
+                                equipitem(v.Name)
+                            end
+                        end
+                    end)
+                end
+            end
+        end)
    end,
 })
 
@@ -86,21 +89,12 @@ local AutoCast = MainTab:CreateToggle({
    Name = "Auto Cast",
    Flag = "Everyone",
    Callback = function(v)
-       _G.AutoCast = v
-
-       spawn(function()
-           while _G.AutoCast do task.wait()
-              for i, v in pairs(Backpack:GetChildren()) do
-                    if v.Name:lower():find("rod") then
-                        local rod = v
-                        if rod:FindFirstChild("values") and rod.values:FindFirstChild("casted") then
-                           local casted = rod.values.casted.Value
-                           if casted == false then
-                                rod.events.cast:FireServer(100,1)
-                        end
-                    end
-                 end
-              end
+        _G.AutoCast = v
+            pcall(function()
+              while _G.AutoCast do wait()
+                    local Rod = Char:FindFirstChildOfClass("Tool")
+                    task.wait(.1)
+                Rod.events.cast:FireServer(100,1)
            end
        end)
    end,
