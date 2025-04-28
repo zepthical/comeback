@@ -63,7 +63,9 @@ MainTab:CreateToggle({
                     if framework then
                         local remote = framework:FindFirstChild("Network") and framework.Network:FindFirstChild("Remote")
                         if remote then
-                            remote:FireServer("BlowBubble")
+                            if remote:FindFirstChild("Event") then
+                                remote.Event:FireServer("BlowBubble")
+                            end
                         end
                     end
                 end)
@@ -88,7 +90,9 @@ MainTab:CreateToggle({
                     if framework then
                         local remote = framework:FindFirstChild("Network") and framework.Network:FindFirstChild("Remote")
                         if remote then
-                            remote:FireServer("SellBubble")
+                            if remote:FindFirstChild("Event") then
+                                remote.Event:FireServer("SellBubble")
+                            end
                         end
                     end
                 end)
