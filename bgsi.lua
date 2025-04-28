@@ -115,14 +115,19 @@ MainTab:CreateToggle({
                 pcall(function()
                     local render = workspace:FindFirstChild("Rendered")
                     if render then
-                        for _, chunker in pairs(render:GetChildren()) do
+                        for _, chunker in pairs(render:GetDescendants()) do
                             if chunker.Name == "Chunker" then
                                 for _, model in pairs(chunker:GetDescendants()) do
                                     if model:IsA("Model") and model:FindFirstChild("coin") then
-                                        local remotes = game:GetService("ReplicatedStorage").Remotes
-                                        local pickupfol = remotes.Pickups
-                                        local collectR = pickupfol.CollectPickUp
-                                        collectR:FireServer(model.Name)
+                                        local remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
+                                        if remotes then
+                                            local pickupfol = remotes:FindFirstChild("Pickups")
+                                            if pickupfol then
+                                                local collectR = pickupfol:FindFirstChild("CollectPickup")
+                                                if collectR then
+                                                collectR:FireServer(model.Name); end
+                                            end
+                                        end
                                     end
                                 end
                             end
