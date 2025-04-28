@@ -117,14 +117,12 @@ MainTab:CreateToggle({
                     if render then
                         for _, chunker in pairs(render:GetChildren()) do
                             if chunker.Name == "Chunker" then
-                                for _, model in pairs(chunker:GetChildren()) do
+                                for _, model in pairs(chunker:GetDescendants()) do
                                     if model:IsA("Model") and model:FindFirstChild("coin") then
-                                        for _, coinModel in ipairs(model:GetChildren()) do
-                                            if coinModel:IsA("Model") and coinModel:FindFirstChild("coin") then
-                                                local coin = coinModel.coin
-                                                getHRP().CFrame = coin.CFrame * CFrame.new(0, 1, 0)
-                                            end
-                                        end
+                                        local remotes = game:GetService("ReplicatedStorage").Remotes
+                                        local pickupfol = remotes.Pickups
+                                        local collectR = pickupfol.CollectPickUp
+                                        collectR:FireServer(model.Name)
                                     end
                                 end
                             end
