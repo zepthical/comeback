@@ -167,42 +167,40 @@ local function Reset()
     end
 end
 
-
 local AutoReel = MainTab:CreateToggle({
-  Name = "Auto Reel",
-  Callback = function(v)
-      _G.AutoReel = v
-      
-      spawn(function()
-          while _G.AutoReel do
-              task.wait(0.01)
-      
-              local PlayerGui = LocalPlayer:FindFirstChild("PlayerGui") or LocalPlayer:WaitForChild("PlayerGui")
-              if PlayerGui then
-                  local reelGui = PlayerGui:FindFirstChild("reel")
-                  if reelGui and reelGui:IsA("ScreenGui") then
-                      local bar = reelGui:FindFirstChild("bar")
-                      local playerbar = bar and bar:FindFirstChild("playerbar")
-                      if bar and playerbar then
-                          local reelFinished = ReplicatedStorage:FindFirstChild("events") and ReplicatedStorage.events:FindFirstChild("reelfinished")
-                          if reelFinished then
-                              playerbar.Size = UDim2.new(1, 0, 1, 0)
-                              reelFinished:FireServer(100, true)
-                              task.wait(1)
-      
-                              local rod = findRod()
-                              if rod and rod:FindFirstChild("values") and rod.values:FindFirstChild("bite") then
-                                  if rod.values.bite.Value == false then
-                                      Reset()
-                                  end
-                              end
+    Name = "Auto Reel",
+    Flag = "AReel",
+    Callback = function(v)
+        _G.AutoReel = v
+        spawn(function()
+            while _G.AutoReel do
+                task.wait(0.1)
+                local Rod = findRod()
+                if Rod and Rod:FindFirstChild("values") and Rod.values:FindFirstChild("bite") then
+                    if Rod.values.bite.Value == true then  -- Only reel if fish is biting
+                        local reelFinished = ReplicatedStorage:FindFirstChild("events") and ReplicatedStorage.events:FindFirstChild("reelfinished")
+                        if reelFinished then
+                            for _, v in pairs(LocalPlayer.PlayerGui:GetChildren()) do
+                               if v:IsA("ScreenGui") and v.Name == "reel" then
+                                 local bar = v:FindFirstChild("bar")
+                                 if bar and ReplicatedStorage:FindFirstChild("events") then
+                                    local playerbar = bar:FindFirstChild("playerbar")
+                                    if playerbar then
+                                       playerbar.Size = UDim2.new(1, 0, 1, 0)
+                                       task.wait(0.5)
+                                       reelFinished:FireServer(100, true)
+                                       task.wait(1)
+                                       Reset()
+                                   end
+                                end
+                             end
                           end
-                      end
-                  end
-              end
-          end
-      end)
-  end,
+                       end
+                    end
+                end
+            end
+        end)
+    end
 })
 
 AutoReel:Set(true)
