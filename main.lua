@@ -134,73 +134,89 @@ local function shake ()
    end
 end
 
-local AutoShake = MainTab:CreateToggle({
-   Name = "Auto Shake",
-   Callback = function(v)
-       _G.AutoShake = v
+local function findRod()
+    for _, v in ipairs(LocalPlayer.Backpack:GetChildren()) do
+        if v:IsA("Tool") and v:FindFirstChild("events") then
+            return v
+        end
+    end
+end
 
-       while _G.AutoShake do
-          task.wait()
-          shake()
-          shake()
-          shake()
-          shake()
-       end
-   end,
-})
-
-AutoShake:Set(true)
-
-
+-- Helper: Reset
 local function Reset()
-    -- Ensure Char is valid before trying to reset
     local Rod = findRod()
     if Rod and Rod:FindFirstChild("events") and Rod.events:FindFirstChild("reset") then
         task.wait(0.1)
-        Rod.events.reset:FireServer() -- Trigger the reset event
-        -- Equip the rod again if required
-        game:GetService("ReplicatedStorage").packages.Net:FindFirstChild("RE/Backpack/Equip"):FireServer(Rod)
-        task.wait()
-        game:GetService("ReplicatedStorage").packages.Net:FindFirstChild("RE/Backpack/Equip"):FireServer(Rod)
+        Rod.events.reset:FireServer()
+        task.wait(0.1)
+        local Equip = ReplicatedStorage.packages.Net:FindFirstChild("RE/Backpack/Equip")
+        if Equip then
+            Equip:FireServer(Rod)
+            task.wait(0.1)
+            Equip:FireServer(Rod)
+        end
     else
         warn("Rod or reset event not found!")
     end
 end
 
-local AutoReel = MainTab:CreateToggle({
+-- Auto Shake
+local AutoShakeToggle = MainTab:CreateToggle({
+    Name = "Auto Shake",
+    CurrentValue = false,
+    Callback = function(Value)
+        _G.AutoShake = Value
+        task.spawn(function()
+            while _G.AutoShake do
+                task.wait()
+                shake()
+                shake()
+                shake()
+                shake()
+            end
+        end)
+    end,
+})
+
+-- Auto Reel
+local AutoReelToggle = MainTab:CreateToggle({
     Name = "Auto Reel",
-    Flag = "AReel",
-    Callback = function(v)
-        _G.AutoReel = v
-        spawn(function()
+    CurrentValue = false,
+    Callback = function(Value)
+        _G.AutoReel = Value
+        task.spawn(function()
             while _G.AutoReel do
                 task.wait(0.1)
                 local Rod = findRod()
-                if Rod and Rod:FindFirstChild("values") and Rod.values:FindFirstChild("bite") then
-                    if Rod.values.bite.Value == true then  -- Only reel if fish is biting
-                        local reelFinished = ReplicatedStorage:FindFirstChild("events") and ReplicatedStorage.events:FindFirstChild("reelfinished")
-                        if reelFinished then
-                            for _, v in pairs(LocalPlayer.PlayerGui:GetChildren()) do
-                               if v:IsA("ScreenGui") and v.Name == "reel" then
-                                 local bar = v:FindFirstChild("bar")
-                                 if bar and ReplicatedStorage:FindFirstChild("events") then
-                                    local playerbar = bar:FindFirstChild("playerbar")
-                                    if playerbar then
-                                       playerbar.Size = UDim2.new(1, 0, 1, 0)
-                                       task.wait(0.5)
-                                       reelFinished:FireServer(100, true)
-                                       task.wait(1)
-                                       Reset()
-                                   end
-                                end
-                             end
-                          end
-                       end
+                if Rod and Rod:FindFirstChild("values") and Rod.values:FindFirstChild("bite") and Rod.values.bite.Value then
+                    local reelGui = LocalPlayer.PlayerGui:FindFirstChild("reel")
+                    local reelfinishedEvent = ReplicatedStorage:FindFirstChild("events") and ReplicatedStorage.events:FindFirstChild("reelfinished")
+
+                    if reelGui and reelGui:FindFirstChild("bar") and reelGui.bar:FindFirstChild("playerbar") and reelfinishedEvent then
+                        local playerbar = reelGui.bar.playerbar
+
+                        -- Start reeling while the fish is still biting
+                        while _G.AutoReel and Rod.values.bite.Value do
+                            playerbar.Size = UDim2.new(1, 0, 1, 0)
+                            task.wait(0.5)
+                            reelfinishedEvent:FireServer(100, true)
+                            task.wait(0.5)
+                        end
+
+                        -- After bite ends
+                        task.wait(0.5)
+                        Reset()
                     end
                 end
             end
         end)
-    end
+    end,
 })
 
-AutoReel:Set(true)
+
+-- Optionally: Turn ON by default
+task.spawn(function()
+    task.wait(0.5) -- Wait Rayfield to fully load
+    AutoShakeToggle:Set(true)
+    AutoReelToggle:Set(true)
+end)
