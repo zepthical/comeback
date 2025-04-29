@@ -143,36 +143,41 @@ for name, _ in pairs(worlds) do
     table.insert(worldNames, name)
 end
 
-local selectedWorldPosition = worlds["World 1"]
+local selectedWorld = "World1" -- Default world
 
 MainTab:CreateDropdown({
     Name = "World Select (Blatant Farm)",
-    Options = worldNames,
-    CurrentOption = {"World 1"},
+    Options = {"World1", "World2", "World3", "World4", "World5", "World6", "World7", "World8", "World9", "World10"},
+    CurrentOption = {"World1"},
     Callback = function(option)
         pcall(function()
-            selectedWorldPosition = worlds[option]
+            selectedWorld = option
         end)
     end,
 })
 
 MainTab:CreateToggle({
     Name = "Blatant Farm",
-    Callback = function(state)
+    Callback = function(enabled)
         pcall(function()
-        task.spawn(function()
-            while state do
-                local char = LocalPlayer.Character
-                if selectedWorldPosition then
-                    char.CFrame = CFrame.new(selectedWorldPosition)
+            task.spawn(function()
+                while enabled do
+                    local character = LocalPlayer.Character
+                    local hrp = character and character:FindFirstChild("HumanoidRootPart")
+                    local worldFolder = workspace:FindFirstChild(selectedWorld)
+                    local winPart = worldFolder and worldFolder:FindFirstChild("WinPart")
+
+                    if hrp and winPart and winPart:IsA("BasePart") then
+                        hrp.CFrame = winPart.CFrame + Vector3.new(0, 5, 0) -- offset to avoid clipping inside
+                    end
+
+                    task.wait(1)
                 end
-                task.wait()
-            end
-        end)
-        task.wait()
+            end)
         end)
     end,
 })
+
 
 --[[MainTab:CreateDivider()
 
