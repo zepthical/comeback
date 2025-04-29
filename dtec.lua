@@ -171,6 +171,61 @@ MainTab:CreateToggle({
     end,
 })
 
+MainTab:CreateDivider()
+
+local function getUniquePetNames()
+    local petsFolder = LocalPlayer:FindFirstChild("Pets")
+    local uniqueNames = {}
+    local nameSet = {}
+
+    if petsFolder then
+        for _, pet in ipairs(petsFolder:GetChildren()) do
+            if pet:IsA("Instance") and not nameSet[pet.Name] then
+                table.insert(uniqueNames, pet.Name)
+                nameSet[pet.Name] = true
+            end
+        end
+    end
+
+    return uniqueNames
+end
+
+-- Create dropdown
+local goldPet = MainTab:CreateDropdown({
+    Name = "Make Golden(Only if you have 5 pets of what you want)",
+    Options = getUniquePetNames(),
+    CurrentOption = {},
+    Callback = function(selected)
+        pcall(function()
+            local petsRemotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
+            if petsRemotes and petsRemotes:FindFirstChild("GoldPetCraftEvent") then
+                petsRemotes.GoldPetCraftEvent:FireServer(selected, 100)
+            end
+        end)
+    end,
+})
+
+local diamondPet = MainTab:CreateDropdown({
+    Name = "Make Diamond(Only if you have 5 pets of what you want)",
+    Options = getUniquePetNames(),
+    CurrentOption = {},
+    Callback = function(selected)
+        pcall(function()
+            local petsRemotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
+            if petsRemotes and petsRemotes:FindFirstChild("DiamondPetCraftEvent") then
+                petsRemotes.GoldPetCraftEvent:FireServer(selected, 100)
+            end
+        end)
+    end,
+})
+
+MainTab:CreateButton({
+   Name = "Refesh Pets",
+   Callback = function()
+        goldPet:Refresh(getUniquePetNames())
+        diamondPet:Refresh(getUniquePetNames())
+   end,
+})
 
 local TeleportTab = Window:CreateTab("Teleport", 4483362458)
 
@@ -189,4 +244,3 @@ for i = 1, 10 do
         end,
     })
 end
-
