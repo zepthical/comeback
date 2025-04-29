@@ -51,7 +51,7 @@ MainTab:CreateButton({
             local remotes = ReplicatedStorage.Remotes
             if remotes:FindFirstChild("AddRewardEvent") then
                 local infevent = remotes.AddRewardEvent
-                infevent:FireServer("Money", math.huge)
+                infevent:FireServer("Cash", math.huge)
             end
         end
 
