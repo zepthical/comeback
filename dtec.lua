@@ -138,12 +138,12 @@ local worlds = {
 }
 
 local worldNames = {}
+
 for name, _ in pairs(worlds) do
     table.insert(worldNames, name)
 end
 
 local selectedWorldPosition = worlds["World 1"]
-local farmEnabled = false
 
 MainTab:CreateDropdown({
     Name = "World Select (Blatant Farm)",
@@ -159,18 +159,18 @@ MainTab:CreateDropdown({
 MainTab:CreateToggle({
     Name = "Blatant Farm",
     Callback = function(state)
-        farmEnabled = state
-        if farmEnabled then
-            task.spawn(function()
-                while farmEnabled do
-                    local char = LocalPlayer.Character
-                    if selectedWorldPosition then
-                        char.CFrame = CFrame.new(selectedWorldPosition)
-                    end
-                    task.wait()
+        pcall(function()
+        task.spawn(function()
+            while state do
+                local char = LocalPlayer.Character
+                if selectedWorldPosition then
+                    char.CFrame = CFrame.new(selectedWorldPosition)
                 end
-            end)
-        end
+                task.wait()
+            end
+        end)
+        task.wait()
+        end)
     end,
 })
 
@@ -283,11 +283,11 @@ local SettingsTab = Window:CreateTab("Settings", 4483362458)
 
 SettingsTab:CreateSection("FPS")
 
-MainTab:CreateToggle({
-   Name = "FPS Boost(Irreversible)",
+SettingsTab:CreateToggle({
+   Name = "FPS Boost(Irreversible) -- not mine",
    Callback = function(Value)
         pcall(function()
-        while Value == true do
+        if Value == true then
             _G.Ignore = {}
             _G.Settings = {
                 Players = {
