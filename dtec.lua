@@ -244,173 +244,38 @@ local TeleportTab = Window:CreateTab("Teleport", 4483362458)
 
 TeleportTab:CreateSection("Worlds")
 
+local worldPos = {
+    ["World 1"] = Vector3.new(15, -400, 0),
+    ["World 2"] = Vector3.new(42, -400, -1048),
+    ["World 3"] = Vector3.new(21, -400, -2004),
+    ["World 4"] = Vector3.new(-6, -400, -3010),
+    ["World 5"] = Vector3.new(-1, -400, -4000),
+    ["World 6"] = Vector3.new(0, -400, -5000),
+    ["World 7"] = Vector3.new(0, -400, -6000),
+    ["World 8"] = Vector3.new(0, -400, -7000),
+    ["World 9"] = Vector3.new(0, -400, -8000),
+    ["World 10"] = Vector3.new(0, -400, -9000),
+}
 
-TeleportTab:CreateButton({
-    Name = "World 1",
-    Callback = function()
-        pcall(function()
-            local remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
-            if remotes and remotes:FindFirstChild("WorldTeleportEvent") then
-                remotes.WorldTeleportEvent:FireServer(1)
-                local character = LocalPlayer.Character
-                local hrp = character and character:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    hrp.CFrame = CFrame.new(100, 1000, 0)
-                end
-            end
-        end)
-    end,
-})
+for i = 1, 10 do
+    local worldName = "World " .. i
+    local position = worldPos[worldName]
 
-TeleportTab:CreateButton({
-    Name = "World 2",
-    Callback = function()
-        pcall(function()
-            local remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
-            if remotes and remotes:FindFirstChild("WorldTeleportEvent") then
-                remotes.WorldTeleportEvent:FireServer(2)
-                local character = LocalPlayer.Character
-                local hrp = character and character:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    hrp.CFrame = CFrame.new(100, 1000, -1000)
-                end
-            end
-        end)
-    end,
-})
+    TeleportTab:CreateButton({
+        Name = worldName,
+        Callback = function()
+            pcall(function()
+                local remotes = ReplicatedStorage:FindFirstChild("Remotes")
+                if remotes and remotes:FindFirstChild("WorldTeleportEvent") then
+                    remotes.WorldTeleportEvent:FireServer(i)
 
-TeleportTab:CreateButton({
-    Name = "World 3",
-    Callback = function()
-        pcall(function()
-            local remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
-            if remotes and remotes:FindFirstChild("WorldTeleportEvent") then
-                remotes.WorldTeleportEvent:FireServer(3)
-                local character = LocalPlayer.Character
-                local hrp = character and character:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    hrp.CFrame = CFrame.new(100, 1000, -2000)
+                    local character = LocalPlayer.Character
+                    local hrp = character and character:FindFirstChild("HumanoidRootPart")
+                    if hrp and position then
+                        hrp.CFrame = CFrame.new(position + Vector3.new(0, 1605, 0)) 
+                    end
                 end
-            end
-        end)
-    end,
-})
-
-TeleportTab:CreateButton({
-    Name = "World 4",
-    Callback = function()
-        pcall(function()
-            local remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
-            if remotes and remotes:FindFirstChild("WorldTeleportEvent") then
-                remotes.WorldTeleportEvent:FireServer(4)
-                local character = LocalPlayer.Character
-                local hrp = character and character:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    hrp.CFrame = CFrame.new(100, 1000, -3000)
-                end
-            end
-        end)
-    end,
-})
-
-TeleportTab:CreateButton({
-    Name = "World 5",
-    Callback = function()
-        pcall(function()
-            local remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
-            if remotes and remotes:FindFirstChild("WorldTeleportEvent") then
-                remotes.WorldTeleportEvent:FireServer(5)
-                local character = LocalPlayer.Character
-                local hrp = character and character:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    hrp.CFrame = CFrame.new(100, 1000, -4000)
-                end
-            end
-        end)
-    end,
-})
-
-TeleportTab:CreateButton({
-    Name = "World 6",
-    Callback = function()
-        pcall(function()
-            local remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
-            if remotes and remotes:FindFirstChild("WorldTeleportEvent") then
-                remotes.WorldTeleportEvent:FireServer(6)
-                local character = LocalPlayer.Character
-                local hrp = character and character:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    hrp.CFrame = CFrame.new(100, 1000, -5000)
-                end
-            end
-        end)
-    end,
-})
-
-TeleportTab:CreateButton({
-    Name = "World 7",
-    Callback = function()
-        pcall(function()
-            local remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
-            if remotes and remotes:FindFirstChild("WorldTeleportEvent") then
-                remotes.WorldTeleportEvent:FireServer(7)
-                local character = LocalPlayer.Character
-                local hrp = character and character:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    hrp.CFrame = CFrame.new(100, 1000, -6000)
-                end
-            end
-        end)
-    end,
-})
-
-TeleportTab:CreateButton({
-    Name = "World 8",
-    Callback = function()
-        pcall(function()
-            local remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
-            if remotes and remotes:FindFirstChild("WorldTeleportEvent") then
-                remotes.WorldTeleportEvent:FireServer(8)
-                local character = LocalPlayer.Character
-                local hrp = character and character:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    hrp.CFrame = CFrame.new(100, 1000, -7000)
-                end
-            end
-        end)
-    end,
-})
-
-TeleportTab:CreateButton({
-    Name = "World 9",
-    Callback = function()
-        pcall(function()
-            local remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
-            if remotes and remotes:FindFirstChild("WorldTeleportEvent") then
-                remotes.WorldTeleportEvent:FireServer(9)
-                local character = LocalPlayer.Character
-                local hrp = character and character:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    hrp.CFrame = CFrame.new(100, 1000, -8000)
-                end
-            end
-        end)
-    end,
-})
-
-TeleportTab:CreateButton({
-    Name = "World 10",
-    Callback = function()
-        pcall(function()
-            local remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
-            if remotes and remotes:FindFirstChild("WorldTeleportEvent") then
-                remotes.WorldTeleportEvent:FireServer(10)
-                local character = LocalPlayer.Character
-                local hrp = character and character:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    hrp.CFrame = CFrame.new(100, 1000, -9000)
-                end
-            end
-        end)
-    end,
-})
+            end)
+        end,
+    })
+end
