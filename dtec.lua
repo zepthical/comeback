@@ -272,10 +272,75 @@ for i = 1, 10 do
                     local character = LocalPlayer.Character
                     local hrp = character and character:FindFirstChild("HumanoidRootPart")
                     if hrp and position then
-                        hrp.CFrame = CFrame.new(position + Vector3.new(0, 1605, 0)) 
+                        hrp.CFrame = CFrame.new(position + Vector3.new(0, 1550, 0)) 
                     end
                 end
             end)
         end,
     })
 end
+
+local SettingsTab = Window:CreateTab("Settings", 4483362458)
+
+SettingsTab:CreateSection("FPS")
+
+MainTab:CreateToggle({
+   Name = "FPS Boost(Irreversible)",
+   Callback = function(Value)
+        pcall(function()
+        while Value == true do
+            _G.Ignore = {}
+            _G.Settings = {
+                Players = {
+                    ["Ignore Me"] = true,
+                    ["Ignore Others"] = true,
+                    ["Ignore Tools"] = true
+                },
+                Meshes = {
+                    NoMesh = false,
+                    NoTexture = false,
+                    Destroy = false
+                },
+                Images = {
+                    Invisible = true,
+                    Destroy = false
+                },
+                Explosions = {
+                    Smaller = true,
+                    Invisible = false, -- Not for PVP games
+                    Destroy = false -- Not for PVP games
+                },
+                Particles = {
+                    Invisible = true,
+                    Destroy = false
+                },
+                TextLabels = {
+                    LowerQuality = true,
+                    Invisible = false,
+                    Destroy = false
+                },
+                MeshParts = {
+                    LowerQuality = true,
+                    Invisible = false,
+                    NoTexture = false,
+                    NoMesh = false,
+                    Destroy = false
+                },
+                Other = {
+                    ["FPS Cap"] = 23239, -- true to uncap
+                    ["No Camera Effects"] = true,
+                    ["No Clothes"] = true,
+                    ["Low Water Graphics"] = true,
+                    ["No Shadows"] = true,
+                    ["Low Rendering"] = true,
+                    ["Low Quality Parts"] = true,
+                    ["Low Quality Models"] = true,
+                    ["Reset Materials"] = true,
+                }
+            }
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/CasperFlyModz/discord.gg-rips/main/FPSBooster.lua"))()
+
+            end
+        end)
+   end,
+})
