@@ -143,43 +143,48 @@ for name, _ in pairs(worlds) do
     table.insert(worldNames, name)
 end
 
-local selectedWorld = "World1" -- default selected world
+local Workspace = game:GetService("Workspace")
+
+local selectedWorldName = "World1" -- default world
 
 MainTab:CreateDropdown({
     Name = "World Select (Blatant Farm)",
     Options = {"World1", "World2", "World3", "World4", "World5", "World6", "World7", "World8", "World9", "World10"},
     CurrentOption = {"World1"},
     Callback = function(option)
-        pcall(function()
-            selectedWorld = option
-        end)
+        -- Always keep the latest selection
+        if typeof(option) == "string" then
+            selectedWorldName = option
+        elseif typeof(option) == "table" then
+            selectedWorldName = option[1]
+        end
     end,
 })
 
 MainTab:CreateToggle({
     Name = "Blatant Farm",
     Callback = function(enabled)
-        pcall(function()
-            task.spawn(function()
-                while enabled do
-                    local character = LocalPlayer.Character
-                    if character and character.PrimaryPart == nil then
-                        character:GetPropertyChangedSignal("PrimaryPart"):Wait()
+        task.spawn(function()
+            while enabled do
+                pcall(function()
+                    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+                    local primaryPart = character.PrimaryPart or character:FindFirstChild("HumanoidRootPart")
+                    if character and primaryPart then
+                        local worldFolder = Workspace:FindFirstChild(selectedWorldName)
+                        if worldFolder and worldFolder:FindFirstChild("WinPart") then
+                            local winPart = worldFolder.WinPart
+                            if winPart and winPart:IsA("BasePart") then
+                                primaryPart.CFrame = CFrame.new(winPart.Position + Vector3.new(0, 0, 0)) -- small offset to avoid clipping
+                            end
+                        end
                     end
-
-                    local worldFolder = workspace:FindFirstChild(selectedWorld)
-                    local winPart = worldFolder and worldFolder:FindFirstChild("WinPart")
-
-                    if character and winPart and winPart:IsA("BasePart") then
-                        character:SetPrimaryPartCFrame(CFrame.new(winPart.Position + Vector3.new(0, 5, 0)))
-                    end
-
-                    task.wait()
-                end
-            end)
+                end)
+                task.wait() -- adjust interval as needed
+            end
         end)
     end,
 })
+
 
 --[[MainTab:CreateDivider()
 
