@@ -164,9 +164,8 @@ MainTab:CreateToggle({
             task.spawn(function()
                 while farmEnabled do
                     local char = LocalPlayer.Character
-                    local hrp = char and char:FindFirstChild("HumanoidRootPart")
-                    if hrp and selectedWorldPosition then
-                        hrp.CFrame = CFrame.new(selectedWorldPosition)
+                    if selectedWorldPosition then
+                        char.CFrame = CFrame.new(selectedWorldPosition)
                     end
                     task.wait()
                 end
