@@ -197,12 +197,21 @@ local goldPet = MainTab:CreateDropdown({
     CurrentOption = {},
     Callback = function(selected)
         pcall(function()
-            local petsRemotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
-            if petsRemotes and petsRemotes:FindFirstChild("GoldPetCraftEvent") then
-                petsRemotes.GoldPetCraftEvent:FireServer(selected, 100)
-            end
+            print(selected.Name)
         end)
     end,
+})
+
+MainTab:CreateButton({
+   Name = "Golden pet",
+   Callback = function()
+        pcall(function()
+            local petsRemotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
+            if petsRemotes and petsRemotes:FindFirstChild("GoldPetCraftEvent") then
+                petsRemotes.GoldPetCraftEvent:FireServer(goldPet.Callback.selected, 100)
+            end
+        end)
+   end,
 })
 
 local diamondPet = MainTab:CreateDropdown({
@@ -213,7 +222,7 @@ local diamondPet = MainTab:CreateDropdown({
         pcall(function()
             local petsRemotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
             if petsRemotes and petsRemotes:FindFirstChild("DiamondPetCraftEvent") then
-                petsRemotes.GoldPetCraftEvent:FireServer(selected, 100)
+                petsRemotes.GoldPetCraftEvent:FireServer(selected.Name, 100)
             end
         end)
     end,
