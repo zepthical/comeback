@@ -43,7 +43,7 @@ local MainTab = Window:CreateTab("Main", 4483362458) -- Title, Image
 MainTab:CreateSection("OP Features")
 
 MainTab:CreateButton({
-   Name = "Infinite Money",
+   Name = "Infinite Cash",
    Callback = function()
 
         pcall(function()
@@ -51,7 +51,7 @@ MainTab:CreateButton({
             local remotes = ReplicatedStorage.Remotes
             if remotes:FindFirstChild("AddRewardEvent") then
                 local infevent = remotes.AddRewardEvent
-                infevent:FireServer("Money", math.huge)
+                infevent:FireServer("Cash", math.huge)
             end
         end
 
@@ -137,15 +137,20 @@ local worlds = {
     ["World 10"] = Vector3.new(0, -400, -9000),
 }
 
+local worldNames = {}
+for name, _ in pairs(worlds) do
+    table.insert(worldNames, name)
+end
+
 local selectedWorldPosition = worlds["World 1"]
+local farmEnabled = false
 
 MainTab:CreateDropdown({
     Name = "World Select (Blatant Farm)",
-    Options = {"World 1", "World 2", "World 3", "World 4", "World 5", "World 6", "World 7", "World 8", "World 9", "World 10"},
+    Options = worldNames,
     CurrentOption = {"World 1"},
     Callback = function(option)
         pcall(function()
-            -- Ensure option is a string (it should be)
             selectedWorldPosition = worlds[option]
         end)
     end,
@@ -153,21 +158,20 @@ MainTab:CreateDropdown({
 
 MainTab:CreateToggle({
     Name = "Blatant Farm",
-    Callback = function(enabled)
-        pcall(function()
+    Callback = function(state)
+        farmEnabled = state
+        if farmEnabled then
             task.spawn(function()
-                while enabled do
-                    if selectedWorldPosition then
-                        local character = LocalPlayer.Character
-                        local hrp = character and character:FindFirstChild("HumanoidRootPart")
-                        if hrp then
-                            hrp.CFrame = CFrame.new(selectedWorldPosition)
-                        end
+                while farmEnabled do
+                    local char = LocalPlayer.Character
+                    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                    if hrp and selectedWorldPosition then
+                        hrp.CFrame = CFrame.new(selectedWorldPosition)
                     end
                     task.wait()
                 end
             end)
-        end)
+        end
     end,
 })
 
