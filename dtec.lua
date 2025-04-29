@@ -143,7 +143,7 @@ for name, _ in pairs(worlds) do
     table.insert(worldNames, name)
 end
 
-local selectedWorld = "World1" -- Default world
+local selectedWorld = "World1" -- default selected world
 
 MainTab:CreateDropdown({
     Name = "World Select (Blatant Farm)",
@@ -163,21 +163,23 @@ MainTab:CreateToggle({
             task.spawn(function()
                 while enabled do
                     local character = LocalPlayer.Character
-                    local hrp = character and character:FindFirstChild("HumanoidRootPart")
+                    if character and character.PrimaryPart == nil then
+                        character:GetPropertyChangedSignal("PrimaryPart"):Wait()
+                    end
+
                     local worldFolder = workspace:FindFirstChild(selectedWorld)
                     local winPart = worldFolder and worldFolder:FindFirstChild("WinPart")
 
-                    if hrp and winPart and winPart:IsA("BasePart") then
-                        hrp.CFrame = winPart.CFrame + Vector3.new(0, 5, 0) -- offset to avoid clipping inside
+                    if character and winPart and winPart:IsA("BasePart") then
+                        character:SetPrimaryPartCFrame(CFrame.new(winPart.Position + Vector3.new(0, 5, 0)))
                     end
 
-                    task.wait(1)
+                    task.wait()
                 end
             end)
         end)
     end,
 })
-
 
 --[[MainTab:CreateDivider()
 
