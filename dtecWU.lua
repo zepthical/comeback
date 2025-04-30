@@ -26,9 +26,9 @@ local Window = WindUI:CreateWindow({
 })
 
 Window:EditOpenButton({
-    Title = "Open Example UI",
+    Title = "Open Moonlight-Hub",
     Icon = "monitor",
-    CornerRadius = UDim.new(0,16),
+    CornerRadius = UDim.new(0,10),
     StrokeThickness = 2,
     Color = ColorSequence.new( -- gradient
         Color3.fromHex("FF0F7B"), 
@@ -45,7 +45,7 @@ local Workspace = game:GetService("Workspace")
 
 local Tabs = {
     MainTab = Window:Tab({ Title = "Main", Icon = "type" }),
-    TeleportnTab = Window:Tab({ Title = "Teleport", Icon = "mouse-pointer-2", Desc = "Contains interactive buttons for various actions." }),
+    TeleportTab = Window:Tab({ Title = "Teleport", Icon = "mouse-pointer-2", Desc = "Contains interactive buttons for various actions." }),
     PetsTab = Window:Tab({ Title = "Pets", Icon = "code", Desc = "Displays and manages code snippets." }),
     SettingsrTab = Window:Tab({ Title = "Settings", Icon = "paintbrush", Desc = "Choose and customize colors easily." }),
     --[[NotificationTab = Window:Tab({ Title = "Notification", Icon = "bell", Desc = "Configure and view notifications." }),
@@ -59,6 +59,8 @@ local Tabs = {
 }
 
 Window:SelectTab(1)
+
+Tabs.MainTab:Section({ Title = "OP Features" })
 
 Tabs.MainTab:Button({
     Title = "Infinite Cash",
@@ -92,14 +94,7 @@ Tabs.MainTab:Button({
     end
 })
 
-Tabs.MainTab:Paragraph({
-    Title = "Farm",
-    Desc = "Farm Wins",
-    Image = "bird",
-    --Color = "Red"
-    Buttons = {
-    }
-})
+Tabs.MainTab:Section({ Title = "Farm" })
 
 Tabs.MainTab:Toggle({
     Title = "Legit Farm",
@@ -155,5 +150,298 @@ Tabs.MainTab:Toggle({
                 end
             end)
         end
+    end
+})
+
+local worldPos = {
+    ["World 1"] = Vector3.new(15, -400, 0),
+    ["World 2"] = Vector3.new(42, -400, -1048),
+    ["World 3"] = Vector3.new(21, -400, -2004),
+    ["World 4"] = Vector3.new(-6, -400, -3010),
+    ["World 5"] = Vector3.new(-1, -400, -4000),
+    ["World 6"] = Vector3.new(0, -400, -5000),
+    ["World 7"] = Vector3.new(0, -400, -6000),
+    ["World 8"] = Vector3.new(0, -400, -7000),
+    ["World 9"] = Vector3.new(0, -400, -8000),
+    ["World 10"] = Vector3.new(0, -400, -9000),
+}
+
+for i = 1, 10 do
+    local worldName = "World " .. i
+    local position = worldPos[worldName]
+
+    Tabs.TeleportTab:Button({
+        Name = worldName,
+        Callback = function()
+            pcall(function()
+                local remotes = ReplicatedStorage:FindFirstChild("Remotes")
+                if remotes and remotes:FindFirstChild("WorldTeleportEvent") then
+                    remotes.WorldTeleportEvent:FireServer(i)
+
+                    local character = LocalPlayer.Character
+                    local hrp = character and character:FindFirstChild("HumanoidRootPart")
+                    if hrp and position then
+                        hrp.CFrame = CFrame.new(position + Vector3.new(0, 1550, 0)) 
+                    end
+                end
+            end)
+        end
+    })
+end
+
+
+
+Tabs.PetsTab:CreateInput({
+   Name = "Triple Dominus ( 50X )",
+   Default = "0",
+   Placeholder = "Amount",
+   Callback = function(Text)
+        pcall(function()
+        for amount = 1, Text do task.wait()
+            if ReplicatedStorage:FindFirstChild("Remotes") then
+                local remotes = ReplicatedStorage.Remotes
+                if remotes:FindFirstChild("SpinPrizeEvent") then
+                    local spinPrizeevent = remotes.SpinPrizeEvent
+                    spinPrizeevent:FireServer(4)
+                end
+            end
+        end
+
+        end)
+   end
+})
+
+Tabs.PetsTab:CreateInput({
+   Name = "Diamond Cosmic Alien ( 180X )",
+   Default = "0",
+   Placeholder = "Amount",
+   Callback = function(Text)
+        pcall(function()
+        for amount = 1, Text do task.wait()
+            if ReplicatedStorage:FindFirstChild("Remotes") then
+                local remotes = ReplicatedStorage.Remotes
+                if remotes:FindFirstChild("PetCageEvent") then
+                    local PetCageevent = remotes.PetCageEvent
+                    PetCageevent:FireServer("Diamond Cosmic Alien")
+                end
+            end
+        end
+
+        end)
+   end
+})
+
+Tabs.PetsTab:CreateInput({
+   Name = "Void Angel ( 100X )",
+   Default = "0",
+   Placeholder = "Amount",
+   Callback = function(Text)
+        pcall(function()
+        for amount = 1, Text do task.wait()
+            if ReplicatedStorage:FindFirstChild("Remotes") then
+                local remotes = ReplicatedStorage.Remotes
+                if remotes:FindFirstChild("PetCageEvent") then
+                    local PetCageevent = remotes.PetCageEvent
+                    PetCageevent:FireServer("Void Angel")
+                end
+            end
+        end
+
+        end)
+   end
+})
+
+local HttpService = game:GetService("HttpService")
+
+local folderPath = "WindUI"
+makefolder(folderPath)
+
+local function SaveFile(fileName, data)
+    local filePath = folderPath .. "/" .. fileName .. ".json"
+    local jsonData = HttpService:JSONEncode(data)
+    writefile(filePath, jsonData)
+end
+
+local function LoadFile(fileName)
+    local filePath = folderPath .. "/" .. fileName .. ".json"
+    if isfile(filePath) then
+        local jsonData = readfile(filePath)
+        return HttpService:JSONDecode(jsonData)
+    end
+end
+
+local function ListFiles()
+    local files = {}
+    for _, file in ipairs(listfiles(folderPath)) do
+        local fileName = file:match("([^/]+)%.json$")
+        if fileName then
+            table.insert(files, fileName)
+        end
+    end
+    return files
+end
+
+Tabs.WindowTab:Section({ Title = "Window" })
+
+local themeValues = {}
+for name, _ in pairs(WindUI:GetThemes()) do
+    table.insert(themeValues, name)
+end
+
+local themeDropdown = Tabs.WindowTab:Dropdown({
+    Title = "Select Theme",
+    Multi = false,
+    AllowNone = false,
+    Value = nil,
+    Values = themeValues,
+    Callback = function(theme)
+        WindUI:SetTheme(theme)
+    end
+})
+themeDropdown:Select(WindUI:GetCurrentTheme())
+
+local ToggleTransparency = Tabs.WindowTab:Toggle({
+    Title = "Toggle Window Transparency",
+    Callback = function(e)
+        Window:ToggleTransparency(e)
+    end,
+    Value = WindUI:GetTransparency()
+})
+
+Tabs.WindowTab:Section({ Title = "Save" })
+
+local fileNameInput = ""
+Tabs.WindowTab:Input({
+    Title = "Write File Name",
+    PlaceholderText = "Enter file name",
+    Callback = function(text)
+        fileNameInput = text
+    end
+})
+
+Tabs.WindowTab:Button({
+    Title = "Save File",
+    Callback = function()
+        if fileNameInput ~= "" then
+            SaveFile(fileNameInput, { Transparent = WindUI:GetTransparency(), Theme = WindUI:GetCurrentTheme() })
+        end
+    end
+})
+
+Tabs.WindowTab:Section({ Title = "Load" })
+
+local filesDropdown
+local files = ListFiles()
+
+filesDropdown = Tabs.WindowTab:Dropdown({
+    Title = "Select File",
+    Multi = false,
+    AllowNone = true,
+    Values = files,
+    Callback = function(selectedFile)
+        fileNameInput = selectedFile
+    end
+})
+
+Tabs.WindowTab:Button({
+    Title = "Load File",
+    Callback = function()
+        if fileNameInput ~= "" then
+            local data = LoadFile(fileNameInput)
+            if data then
+                WindUI:Notify({
+                    Title = "File Loaded",
+                    Content = "Loaded data: " .. HttpService:JSONEncode(data),
+                    Duration = 5,
+                })
+                if data.Transparent then 
+                    Window:ToggleTransparency(data.Transparent)
+                    ToggleTransparency:SetValue(data.Transparent)
+                end
+                if data.Theme then WindUI:SetTheme(data.Theme) end
+            end
+        end
+    end
+})
+
+Tabs.WindowTab:Button({
+    Title = "Overwrite File",
+    Callback = function()
+        if fileNameInput ~= "" then
+            SaveFile(fileNameInput, { Transparent = WindUI:GetTransparency(), Theme = WindUI:GetCurrentTheme() })
+        end
+    end
+})
+
+Tabs.WindowTab:Button({
+    Title = "Refresh List",
+    Callback = function()
+        filesDropdown:Refresh(ListFiles())
+    end
+})
+
+local currentThemeName = WindUI:GetCurrentTheme()
+local themes = WindUI:GetThemes()
+
+local ThemeAccent = themes[currentThemeName].Accent
+local ThemeOutline = themes[currentThemeName].Outline
+local ThemeText = themes[currentThemeName].Text
+local ThemePlaceholderText = themes[currentThemeName].PlaceholderText
+
+function updateTheme()
+    WindUI:AddTheme({
+        Name = currentThemeName,
+        Accent = ThemeAccent,
+        Outline = ThemeOutline,
+        Text = ThemeText,
+        PlaceholderText = ThemePlaceholderText
+    })
+    WindUI:SetTheme(currentThemeName)
+end
+
+local CreateInput = Tabs.CreateThemeTab:Input({
+    Title = "Theme Name",
+    Value = currentThemeName,
+    Callback = function(name)
+        currentThemeName = name
+    end
+})
+
+Tabs.CreateThemeTab:Colorpicker({
+    Title = "Background Color",
+    Default = Color3.fromHex(ThemeAccent),
+    Callback = function(color)
+        ThemeAccent = color:ToHex()
+    end
+})
+
+Tabs.CreateThemeTab:Colorpicker({
+    Title = "Outline Color",
+    Default = Color3.fromHex(ThemeOutline),
+    Callback = function(color)
+        ThemeOutline = color:ToHex()
+    end
+})
+
+Tabs.CreateThemeTab:Colorpicker({
+    Title = "Text Color",
+    Default = Color3.fromHex(ThemeText),
+    Callback = function(color)
+        ThemeText = color:ToHex()
+    end
+})
+
+Tabs.CreateThemeTab:Colorpicker({
+    Title = "Placeholder Text Color",
+    Default = Color3.fromHex(ThemePlaceholderText),
+    Callback = function(color)
+        ThemePlaceholderText = color:ToHex()
+    end
+})
+
+Tabs.CreateThemeTab:Button({
+    Title = "Update Theme",
+    Callback = function()
+        updateTheme()
     end
 })
