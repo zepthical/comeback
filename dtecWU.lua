@@ -3,12 +3,12 @@ local WindUI = loadstring(game:HttpGet("https://tree-hub.vercel.app/api/UI/WindU
 local Window = WindUI:CreateWindow({
     Title = "Moonlight Hub",
     Icon = "door-open",
-    Author = "Example UI",
+    Author = "Dig to Earth's Core",
     Folder = "CloudHub",
     Size = UDim2.fromOffset(400, 360),
     Transparent = true,
     Theme = "Dark",
-    UserEnabled = false,
+    UserEnabled = true,
     SideBarWidth = 200,
     --Background = "rbxassetid://13511292247", -- rbxassetid only
     HasOutline = true,
@@ -96,12 +96,14 @@ Tabs.MainTab:Button({
 
 Tabs.MainTab:Section({ Title = "Farm" })
 
+local AutoDig = LocalPlayer.AutoDig
+AutoDig.Value = false
+
 Tabs.MainTab:Toggle({
     Title = "Legit Farm",
     Default = false,
     Callback = function(state) 
         pcall(function()
-            local AutoDig = LocalPlayer.AutoDig
             AutoDig.Value = state
             if AutoDig.Value == true then
                 AutoDig.Value = false
