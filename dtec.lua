@@ -136,7 +136,7 @@ MainTab:CreateToggle({
                             hrp.CFrame = winPart.CFrame + Vector3.new(0, 12.5, 0)
                         end
                     end)
-                    task.wait(0.1)
+                    task.wait(0.01)
                 end
             end)
         end
@@ -323,9 +323,9 @@ local SettingsTab = Window:CreateTab("Settings", 4483362458)
 
 SettingsTab:CreateSection("FPS")
 
-SettingsTab:CreateToggle({
-   Name = "FPS Boost(Irreversible) -- not mine",
-   Callback = function(Value)
+SettingsTab:CreateButton({
+   Name = "FPS Boost ( Irreversible )",
+   Callback = function()
         pcall(function()
             _G.Ignore = {}
             _G.Settings = {
@@ -377,10 +377,12 @@ SettingsTab:CreateToggle({
                 }
             }
             loadstring(game:HttpGet("https://raw.githubusercontent.com/CasperFlyModz/discord.gg-rips/main/FPSBooster.lua"))()
-
         end)
    end,
 })
+
+SettingsTab:CreateSection("Others")
+
 SettingsTab:CreateButton({
    Name = "Destroy UI",
    Callback = function()
