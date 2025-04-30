@@ -171,7 +171,7 @@ for i = 1, 10 do
     local position = worldPos[worldName]
 
     Tabs.TeleportTab:Button({
-        Name = worldName,
+        Title = worldName,
         Callback = function()
             pcall(function()
                 local remotes = ReplicatedStorage:FindFirstChild("Remotes")
@@ -192,7 +192,7 @@ end
 
 
 Tabs.PetsTab:CreateInput({
-   Name = "Triple Dominus ( 50X )",
+   Title = "Triple Dominus ( 50X )",
    Default = "0",
    Placeholder = "Amount",
    Callback = function(Text)
@@ -212,7 +212,7 @@ Tabs.PetsTab:CreateInput({
 })
 
 Tabs.PetsTab:CreateInput({
-   Name = "Diamond Cosmic Alien ( 180X )",
+   Title = "Diamond Cosmic Alien ( 180X )",
    Default = "0",
    Placeholder = "Amount",
    Callback = function(Text)
@@ -232,7 +232,7 @@ Tabs.PetsTab:CreateInput({
 })
 
 Tabs.PetsTab:CreateInput({
-   Name = "Void Angel ( 100X )",
+   Title = "Void Angel ( 100X )",
    Default = "0",
    Placeholder = "Amount",
    Callback = function(Text)
