@@ -1,37 +1,41 @@
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local WindUI = loadstring(game:HttpGet("https://tree-hub.vercel.app/api/UI/WindUI"))()
 
-local Window = Rayfield:CreateWindow({
-   Name = "Zepth | DTEC",
-   Icon = 0, 
-   LoadingTitle = "Dig to earth's core",
-   LoadingSubtitle = "by Zepth",
-   Theme = "Default",
+local Window = WindUI:CreateWindow({
+    Title = "Moonlight Hub",
+    Icon = "door-open",
+    Author = "Example UI",
+    Folder = "CloudHub",
+    Size = UDim2.fromOffset(400, 360),
+    Transparent = true,
+    Theme = "Dark",
+    UserEnabled = false,
+    SideBarWidth = 200,
+    --Background = "rbxassetid://13511292247", -- rbxassetid only
+    HasOutline = true,
+    -- remove it below if you don't want to use the key system in your script.
+    KeySystem = { 
+        Key = { "1234", "5678" },
+        Note = "Example Key System. \n\nThe Key is '1234' or '5678",
+        -- Thumbnail = {
+        --     Image = "rbxassetid://18220445082", -- rbxassetid only
+        --     Title = "Thumbnail"
+        -- },
+        URL = "https://github.com/Footagesus/WindUI", -- remove this if the key is not obtained from the link.
+        SaveKey = true, -- optional
+    },
+})
 
-   DisableRayfieldPrompts = false,
-   DisableBuildWarnings = false, 
-
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil, 
-      FileName = "Big Hub"
-   },
-
-   Discord = {
-      Enabled = false, 
-      Invite = "noinvitelink",
-      RememberJoins = true 
-   },
-
-   KeySystem = false, 
-   KeySettings = {
-      Title = "Untitled",
-      Subtitle = "Key System",
-      Note = "No method of obtaining the key is provided",
-      FileName = "Key",
-      SaveKey = true,
-      GrabKeyFromSite = false,
-      Key = {"Hello"}
-   } 
+Window:EditOpenButton({
+    Title = "Open Moonlight-Hub",
+    Icon = "monitor",
+    CornerRadius = UDim.new(0,10),
+    StrokeThickness = 2,
+    Color = ColorSequence.new( -- gradient
+        Color3.fromHex("FF0F7B"), 
+        Color3.fromHex("F89B29")
+    ),
+    --Enabled = false,
+    Draggable = true,
 })
 
 local Players = game:GetService("Players")
@@ -39,91 +43,97 @@ local LocalPlayer = Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
-local MainTab = Window:CreateTab("Main", 4483362458) -- Title, Image
+local Tabs = {
+    MainTab = Window:Tab({ Title = "Main", Icon = "type" }),
+    TeleportTab = Window:Tab({ Title = "Teleport", Icon = "mouse-pointer-2", Desc = "Contains interactive buttons for various actions." }),
+    PetsTab = Window:Tab({ Title = "Pets", Icon = "code", Desc = "Displays and manages code snippets." }),
+    SettingsrTab = Window:Tab({ Title = "Settings", Icon = "paintbrush", Desc = "Choose and customize colors easily." }),
+    --[[NotificationTab = Window:Tab({ Title = "Notification", Icon = "bell", Desc = "Configure and view notifications." }),
+    ToggleTab = Window:Tab({ Title = "Toggle", Icon = "toggle-left", Desc = "Switch settings on and off." }),
+    SliderTab = Window:Tab({ Title = "Slider", Icon = "sliders-horizontal", Desc = "Adjust values smoothly with sliders." }),
+    InputTab = Window:Tab({ Title = "Input", Icon = "keyboard", Desc = "Accept text and numerical input." }),
+    DropdownTab = Window:Tab({ Title = "Dropdown", Icon = "chevrons-up-down", Desc = "Select from multiple options." }),]]
+    b = Window:Divider(),
+    WindowTab = Window:Tab({ Title = "Window and File Configuration", Icon = "settings", Desc = "Manage window settings and file configurations." }),
+    CreateThemeTab = Window:Tab({ Title = "Create Theme", Icon = "palette", Desc = "Design and apply custom themes." }),
+}
 
-MainTab:CreateSection("OP Features")
+Window:SelectTab(1)
 
-MainTab:CreateButton({
-   Name = "Infinite Cash",
-   Callback = function()
+Tabs.MainTab:Section({ Title = "OP Features" })
 
+Tabs.MainTab:Button({
+    Title = "Infinite Cash",
+    Desc = "Please only click one time",
+    Callback = function()
         pcall(function()
-        if ReplicatedStorage:FindFirstChild("Remotes") then
-            local remotes = ReplicatedStorage.Remotes
-            if remotes:FindFirstChild("AddRewardEvent") then
-                local infevent = remotes.AddRewardEvent
-                infevent:FireServer("Cash", math.huge)
+            if ReplicatedStorage:FindFirstChild("Remotes") then
+                local remotes = ReplicatedStorage.Remotes
+                if remotes:FindFirstChild("AddRewardEvent") then
+                    local infevent = remotes.AddRewardEvent
+                    infevent:FireServer("Cash", math.huge)
+                end
             end
-        end
-
         end)
-   end,
+    end
 })
 
-MainTab:CreateButton({
-   Name = "Infinite Gems",
-   Callback = function()
+Tabs.MainTab:Button({
+    Title = "Infinite Gems",
+    Desc = "Please only click one time",
+    Callback = function()
         pcall(function()
-        if ReplicatedStorage:FindFirstChild("Remotes") then
-            local remotes = ReplicatedStorage.Remotes
-            if remotes:FindFirstChild("AddRewardEvent") then
-                local infevent = remotes.AddRewardEvent
-                infevent:FireServer("Gems", math.huge)
+            if ReplicatedStorage:FindFirstChild("Remotes") then
+                local remotes = ReplicatedStorage.Remotes
+                if remotes:FindFirstChild("AddRewardEvent") then
+                    local infevent = remotes.AddRewardEvent
+                    infevent:FireServer("Gems", math.huge)
+                end
             end
-        end
-        
         end)
-   end,
+    end
 })
 
-MainTab:CreateSection("Farm")
+Tabs.MainTab:Section({ Title = "Farm" })
 
-MainTab:CreateToggle({
-   Name = "Legit Farm",
-   Callback = function(Value)
+Tabs.MainTab:Toggle({
+    Title = "Legit Farm",
+    Default = false,
+    Callback = function(state) 
         pcall(function()
-        if LocalPlayer:FindFirstChild("AutoDig") and LocalPlayer.AutoDig.Value == false then
             local AutoDig = LocalPlayer.AutoDig
-
-        if AutoDig.Value == true then
-            AutoDig.Value = false
-
-        elseif AutoDig.Value == false then
-            AutoDig.Value = true
-        end
-
-        end
-
+            AutoDig.Value = state
+            if AutoDig.Value == true then
+                AutoDig.Value = false
+            elseif AutoDig.Value == false then
+                AutoDig.Value = true
+            end
         end)
-   end,
+    end
 })
-
---[[local function GetCurrentWorldValue()
-    local currentWorld = LocalPlayer:FindFirstChild("CurrentWorld")
-    return currentWorld and currentWorld.Value or nil
-end]]
 
 local selectedWorldName = "World1"
-local isFarming = false -- track toggle state
+local isFarming = false
 
-MainTab:CreateDropdown({
-    Name = "World Select (Blatant Farm)",
-    Options = {"World1", "World2", "World3", "World4", "World5", "World6", "World7", "World8", "World9", "World10"},
-    CurrentOption = {"World1"},
-    Callback = function(option)
+Tabs.MainTab:Dropdown({
+    Title = "World Select (Blatant Farm)",
+    Values = {"World1", "World2", "World3", "World4", "World5", "World6", "World7", "World8", "World9", "World10"},
+    Value = "Option 1",
+    Callback = function(option) 
         if typeof(option) == "table" then
             selectedWorldName = option[1]
         else
             selectedWorldName = option
         end
-    end,
+    end
 })
 
-MainTab:CreateToggle({
-    Name = "Blatant Farm",
-    Callback = function(enabled)
-        isFarming = enabled -- update toggle state
-        if enabled then
+Tabs.MainTab:Toggle({
+    Title = "Blatant Farm",
+    Default = false,
+    Callback = function(state) 
+        isFarming = state -- update toggle state
+        if state then
             task.spawn(function()
                 while isFarming do
                     pcall(function()
@@ -136,82 +146,12 @@ MainTab:CreateToggle({
                             hrp.CFrame = winPart.CFrame + Vector3.new(0, 12.5, 0)
                         end
                     end)
-                    task.wait(0.01)
+                    task.wait(0.05)
                 end
             end)
         end
-    end,
-})
-
-
---[[MainTab:CreateDivider()
-
-local function getUniquePetNames()
-    local petsFolder = LocalPlayer:FindFirstChild("Pets")
-    local uniqueNames = {}
-    local nameSet = {}
-
-    if petsFolder then
-        for _, pet in ipairs(petsFolder:GetChildren()) do
-            if pet:IsA("Instance") and not nameSet[pet.Name] then
-                table.insert(uniqueNames, pet.Name)
-                nameSet[pet.Name] = true
-            end
-        end
     end
-
-    return uniqueNames
-end
-
--- Create dropdown
-local goldPet = MainTab:CreateDropdown({
-    Name = "Make Golden(Only if you have 5 pets of what you want)",
-    Options = getUniquePetNames(),
-    CurrentOption = {},
-    Callback = function(selected)
-        pcall(function()
-            print(selected.Name)
-        end)
-    end,
 })
-
-MainTab:CreateButton({
-   Name = "Golden pet",
-   Callback = function()
-        pcall(function()
-            local petsRemotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
-            if petsRemotes and petsRemotes:FindFirstChild("GoldPetCraftEvent") then
-                petsRemotes.GoldPetCraftEvent:FireServer(goldPet.Callback.selected, 100)
-            end
-        end)
-   end,
-})
-
-local diamondPet = MainTab:CreateDropdown({
-    Name = "Make Diamond(Only if you have 5 pets of what you want)",
-    Options = getUniquePetNames(),
-    CurrentOption = {},
-    Callback = function(selected)
-        pcall(function()
-            local petsRemotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
-            if petsRemotes and petsRemotes:FindFirstChild("DiamondPetCraftEvent") then
-                petsRemotes.GoldPetCraftEvent:FireServer(selected.Name, 100)
-            end
-        end)
-    end,
-})
-
-MainTab:CreateButton({
-   Name = "Refesh Pets",
-   Callback = function()
-        goldPet:Refresh(getUniquePetNames())
-        diamondPet:Refresh(getUniquePetNames())
-   end,
-}) ]]
-
-local TeleportTab = Window:CreateTab("Teleport", 4483362458)
-
-TeleportTab:CreateSection("Worlds")
 
 local worldPos = {
     ["World 1"] = Vector3.new(15, -400, 0),
@@ -230,7 +170,7 @@ for i = 1, 10 do
     local worldName = "World " .. i
     local position = worldPos[worldName]
 
-    TeleportTab:CreateButton({
+    Tabs.TeleportTab:Button({
         Name = worldName,
         Callback = function()
             pcall(function()
@@ -245,19 +185,16 @@ for i = 1, 10 do
                     end
                 end
             end)
-        end,
+        end
     })
 end
 
-local PetsTab = Window:CreateTab("Pets", 4483362458)
 
-PetsTab:CreateSection("OP Pets")
 
-PetsTab:CreateInput({
+Tabs.PetsTab:CreateInput({
    Name = "Triple Dominus ( 50X )",
-   CurrentValue = "0",
-   PlaceholderText = "Amount",
-   RemoveTextAfterFocusLost = true,
+   Default = "0",
+   Placeholder = "Amount",
    Callback = function(Text)
         pcall(function()
         for amount = 1, Text do task.wait()
@@ -271,14 +208,13 @@ PetsTab:CreateInput({
         end
 
         end)
-   end,
+   end
 })
 
-PetsTab:CreateInput({
-   Name = "Diamond Cosmic Alien[Best] ( 180X )",
-   CurrentValue = "0",
-   PlaceholderText = "Amount",
-   RemoveTextAfterFocusLost = true,
+Tabs.PetsTab:CreateInput({
+   Name = "Diamond Cosmic Alien ( 180X )",
+   Default = "0",
+   Placeholder = "Amount",
    Callback = function(Text)
         pcall(function()
         for amount = 1, Text do task.wait()
@@ -292,14 +228,13 @@ PetsTab:CreateInput({
         end
 
         end)
-   end,
+   end
 })
 
-PetsTab:CreateInput({
+Tabs.PetsTab:CreateInput({
    Name = "Void Angel ( 100X )",
-   CurrentValue = "0",
-   PlaceholderText = "Amount",
-   RemoveTextAfterFocusLost = true,
+   Default = "0",
+   Placeholder = "Amount",
    Callback = function(Text)
         pcall(function()
         for amount = 1, Text do task.wait()
@@ -313,81 +248,200 @@ PetsTab:CreateInput({
         end
 
         end)
-   end,
+   end
 })
 
+local HttpService = game:GetService("HttpService")
 
+local folderPath = "WindUI"
+makefolder(folderPath)
 
+local function SaveFile(fileName, data)
+    local filePath = folderPath .. "/" .. fileName .. ".json"
+    local jsonData = HttpService:JSONEncode(data)
+    writefile(filePath, jsonData)
+end
 
-local SettingsTab = Window:CreateTab("Settings", 4483362458)
+local function LoadFile(fileName)
+    local filePath = folderPath .. "/" .. fileName .. ".json"
+    if isfile(filePath) then
+        local jsonData = readfile(filePath)
+        return HttpService:JSONDecode(jsonData)
+    end
+end
 
-SettingsTab:CreateSection("FPS")
+local function ListFiles()
+    local files = {}
+    for _, file in ipairs(listfiles(folderPath)) do
+        local fileName = file:match("([^/]+)%.json$")
+        if fileName then
+            table.insert(files, fileName)
+        end
+    end
+    return files
+end
 
-SettingsTab:CreateButton({
-   Name = "FPS Boost ( Irreversible )",
-   Callback = function()
-        pcall(function()
-            _G.Ignore = {}
-            _G.Settings = {
-                Players = {
-                    ["Ignore Me"] = true,
-                    ["Ignore Others"] = true,
-                    ["Ignore Tools"] = true
-                },
-                Meshes = {
-                    NoMesh = false,
-                    NoTexture = false,
-                    Destroy = false
-                },
-                Images = {
-                    Invisible = true,
-                    Destroy = false
-                },
-                Explosions = {
-                    Smaller = true,
-                    Invisible = false, -- Not for PVP games
-                    Destroy = false -- Not for PVP games
-                },
-                Particles = {
-                    Invisible = true,
-                    Destroy = false
-                },
-                TextLabels = {
-                    LowerQuality = true,
-                    Invisible = false,
-                    Destroy = false
-                },
-                MeshParts = {
-                    LowerQuality = true,
-                    Invisible = false,
-                    NoTexture = false,
-                    NoMesh = false,
-                    Destroy = false
-                },
-                Other = {
-                    ["FPS Cap"] = 23239, -- true to uncap
-                    ["No Camera Effects"] = true,
-                    ["No Clothes"] = true,
-                    ["Low Water Graphics"] = true,
-                    ["No Shadows"] = true,
-                    ["Low Rendering"] = true,
-                    ["Low Quality Parts"] = true,
-                    ["Low Quality Models"] = true,
-                    ["Reset Materials"] = true,
-                }
-            }
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/CasperFlyModz/discord.gg-rips/main/FPSBooster.lua"))()
-        end)
-   end,
+Tabs.WindowTab:Section({ Title = "Window" })
+
+local themeValues = {}
+for name, _ in pairs(WindUI:GetThemes()) do
+    table.insert(themeValues, name)
+end
+
+local themeDropdown = Tabs.WindowTab:Dropdown({
+    Title = "Select Theme",
+    Multi = false,
+    AllowNone = false,
+    Value = nil,
+    Values = themeValues,
+    Callback = function(theme)
+        WindUI:SetTheme(theme)
+    end
+})
+themeDropdown:Select(WindUI:GetCurrentTheme())
+
+local ToggleTransparency = Tabs.WindowTab:Toggle({
+    Title = "Toggle Window Transparency",
+    Callback = function(e)
+        Window:ToggleTransparency(e)
+    end,
+    Value = WindUI:GetTransparency()
 })
 
-SettingsTab:CreateSection("Others")
+Tabs.WindowTab:Section({ Title = "Save" })
 
-SettingsTab:CreateButton({
-   Name = "Destroy UI",
-   Callback = function()
-        pcall(function()
-            Rayfield:Destroy()
-        end)
-   end,
+local fileNameInput = ""
+Tabs.WindowTab:Input({
+    Title = "Write File Name",
+    PlaceholderText = "Enter file name",
+    Callback = function(text)
+        fileNameInput = text
+    end
+})
+
+Tabs.WindowTab:Button({
+    Title = "Save File",
+    Callback = function()
+        if fileNameInput ~= "" then
+            SaveFile(fileNameInput, { Transparent = WindUI:GetTransparency(), Theme = WindUI:GetCurrentTheme() })
+        end
+    end
+})
+
+Tabs.WindowTab:Section({ Title = "Load" })
+
+local filesDropdown
+local files = ListFiles()
+
+filesDropdown = Tabs.WindowTab:Dropdown({
+    Title = "Select File",
+    Multi = false,
+    AllowNone = true,
+    Values = files,
+    Callback = function(selectedFile)
+        fileNameInput = selectedFile
+    end
+})
+
+Tabs.WindowTab:Button({
+    Title = "Load File",
+    Callback = function()
+        if fileNameInput ~= "" then
+            local data = LoadFile(fileNameInput)
+            if data then
+                WindUI:Notify({
+                    Title = "File Loaded",
+                    Content = "Loaded data: " .. HttpService:JSONEncode(data),
+                    Duration = 5,
+                })
+                if data.Transparent then 
+                    Window:ToggleTransparency(data.Transparent)
+                    ToggleTransparency:SetValue(data.Transparent)
+                end
+                if data.Theme then WindUI:SetTheme(data.Theme) end
+            end
+        end
+    end
+})
+
+Tabs.WindowTab:Button({
+    Title = "Overwrite File",
+    Callback = function()
+        if fileNameInput ~= "" then
+            SaveFile(fileNameInput, { Transparent = WindUI:GetTransparency(), Theme = WindUI:GetCurrentTheme() })
+        end
+    end
+})
+
+Tabs.WindowTab:Button({
+    Title = "Refresh List",
+    Callback = function()
+        filesDropdown:Refresh(ListFiles())
+    end
+})
+
+local currentThemeName = WindUI:GetCurrentTheme()
+local themes = WindUI:GetThemes()
+
+local ThemeAccent = themes[currentThemeName].Accent
+local ThemeOutline = themes[currentThemeName].Outline
+local ThemeText = themes[currentThemeName].Text
+local ThemePlaceholderText = themes[currentThemeName].PlaceholderText
+
+function updateTheme()
+    WindUI:AddTheme({
+        Name = currentThemeName,
+        Accent = ThemeAccent,
+        Outline = ThemeOutline,
+        Text = ThemeText,
+        PlaceholderText = ThemePlaceholderText
+    })
+    WindUI:SetTheme(currentThemeName)
+end
+
+local CreateInput = Tabs.CreateThemeTab:Input({
+    Title = "Theme Name",
+    Value = currentThemeName,
+    Callback = function(name)
+        currentThemeName = name
+    end
+})
+
+Tabs.CreateThemeTab:Colorpicker({
+    Title = "Background Color",
+    Default = Color3.fromHex(ThemeAccent),
+    Callback = function(color)
+        ThemeAccent = color:ToHex()
+    end
+})
+
+Tabs.CreateThemeTab:Colorpicker({
+    Title = "Outline Color",
+    Default = Color3.fromHex(ThemeOutline),
+    Callback = function(color)
+        ThemeOutline = color:ToHex()
+    end
+})
+
+Tabs.CreateThemeTab:Colorpicker({
+    Title = "Text Color",
+    Default = Color3.fromHex(ThemeText),
+    Callback = function(color)
+        ThemeText = color:ToHex()
+    end
+})
+
+Tabs.CreateThemeTab:Colorpicker({
+    Title = "Placeholder Text Color",
+    Default = Color3.fromHex(ThemePlaceholderText),
+    Callback = function(color)
+        ThemePlaceholderText = color:ToHex()
+    end
+})
+
+Tabs.CreateThemeTab:Button({
+    Title = "Update Theme",
+    Callback = function()
+        updateTheme()
+    end
 })
