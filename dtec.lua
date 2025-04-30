@@ -76,59 +76,32 @@ MainTab:CreateButton({
    end,
 })
 
-MainTab:CreateInput({
-   Name = "Triple Dominus Pet",
-   CurrentValue = "0",
-   PlaceholderText = "Amount",
-   RemoveTextAfterFocusLost = true,
-   Callback = function(Text)
-        pcall(function()
-        for amount = 1, Text do task.wait()
-            if ReplicatedStorage:FindFirstChild("Remotes") then
-                local remotes = ReplicatedStorage.Remotes
-                if remotes:FindFirstChild("SpinPrizeEvent") then
-                    local spinPrizeevent = remotes.SpinPrizeEvent
-                    spinPrizeevent:FireServer(4)
-                end
-            end
-        end
-
-        end)
-   end,
-})
-
 MainTab:CreateSection("Farm")
 
 MainTab:CreateToggle({
    Name = "Legit Farm",
    Callback = function(Value)
         pcall(function()
-        if Value == true then
-            if ReplicatedStorage:FindFirstChild("Remotes") then
-                local remotes = ReplicatedStorage.Remotes
-                if remotes:FindFirstChild("AutoDigEvent") then
-                    local autodigevent = remotes.AutoDigEvent
-                    autodigevent:FireServer()
-                end
-            end
-            elseif Value == false then
-                if ReplicatedStorage:FindFirstChild("Remotes") then
-                local remotes = ReplicatedStorage.Remotes
-                if remotes:FindFirstChild("AutoDigEvent") then
-                    local autodigevent = remotes.AutoDigEvent
-                    autodigevent:FireServer()
-                end
-            end
+        if LocalPlayer:FindFirstChild("AutoDig") and LocalPlayer.AutoDig.Value == false then
+            local AutoDig = LocalPlayer.AutoDig
+
+        if AutoDig.Value == true then
+            AutoDig.Value = false
+
+        elseif AutoDig.Value == false then
+            AutoDig.Value = true
+        end
+
         end
 
         end)
    end,
 })
 
-local function GetCurrentWorldValue()
+--[[local function GetCurrentWorldValue()
     local currentWorld = LocalPlayer:FindFirstChild("CurrentWorld")
     return currentWorld and currentWorld.Value or nil
-end
+end]]
 
 local selectedWorldName = "World1"
 local isFarming = false -- track toggle state
@@ -160,7 +133,7 @@ MainTab:CreateToggle({
                         local winPart = world and world:FindFirstChild("WinPart")
 
                         if hrp and winPart then
-                            hrp.CFrame = winPart.CFrame + Vector3.new(0, 10, 0)
+                            hrp.CFrame = winPart.CFrame + Vector3.new(0, 12.5, 0)
                         end
                     end)
                     task.wait(0.1)
@@ -276,6 +249,76 @@ for i = 1, 10 do
     })
 end
 
+local PetsTab = Window:CreateTab("Pets", 4483362458)
+
+PetsTab:CreateSection("OP Pets")
+
+PetsTab:CreateInput({
+   Name = "Triple Dominus ( 50X )",
+   CurrentValue = "0",
+   PlaceholderText = "Amount",
+   RemoveTextAfterFocusLost = true,
+   Callback = function(Text)
+        pcall(function()
+        for amount = 1, Text do task.wait()
+            if ReplicatedStorage:FindFirstChild("Remotes") then
+                local remotes = ReplicatedStorage.Remotes
+                if remotes:FindFirstChild("SpinPrizeEvent") then
+                    local spinPrizeevent = remotes.SpinPrizeEvent
+                    spinPrizeevent:FireServer(4)
+                end
+            end
+        end
+
+        end)
+   end,
+})
+
+PetsTab:CreateInput({
+   Name = "Diamond Cosmic Alien[Best] ( 180X )",
+   CurrentValue = "0",
+   PlaceholderText = "Amount",
+   RemoveTextAfterFocusLost = true,
+   Callback = function(Text)
+        pcall(function()
+        for amount = 1, Text do task.wait()
+            if ReplicatedStorage:FindFirstChild("Remotes") then
+                local remotes = ReplicatedStorage.Remotes
+                if remotes:FindFirstChild("PetCageEvent") then
+                    local PetCageevent = remotes.PetCageEvent
+                    PetCageevent:FireServer("Diamond Cosmic Alien")
+                end
+            end
+        end
+
+        end)
+   end,
+})
+
+PetsTab:CreateInput({
+   Name = "Void Angel ( 100X )",
+   CurrentValue = "0",
+   PlaceholderText = "Amount",
+   RemoveTextAfterFocusLost = true,
+   Callback = function(Text)
+        pcall(function()
+        for amount = 1, Text do task.wait()
+            if ReplicatedStorage:FindFirstChild("Remotes") then
+                local remotes = ReplicatedStorage.Remotes
+                if remotes:FindFirstChild("PetCageEvent") then
+                    local PetCageevent = remotes.PetCageEvent
+                    PetCageevent:FireServer("Void Angel")
+                end
+            end
+        end
+
+        end)
+   end,
+})
+
+
+
+
 local SettingsTab = Window:CreateTab("Settings", 4483362458)
 
 SettingsTab:CreateSection("FPS")
@@ -284,7 +327,6 @@ SettingsTab:CreateToggle({
    Name = "FPS Boost(Irreversible) -- not mine",
    Callback = function(Value)
         pcall(function()
-        if Value == true then
             _G.Ignore = {}
             _G.Settings = {
                 Players = {
@@ -336,7 +378,14 @@ SettingsTab:CreateToggle({
             }
             loadstring(game:HttpGet("https://raw.githubusercontent.com/CasperFlyModz/discord.gg-rips/main/FPSBooster.lua"))()
 
-            end
+        end)
+   end,
+})
+SettingsTab:CreateButton({
+   Name = "Destroy UI",
+   Callback = function()
+        pcall(function()
+            Rayfield:Destroy()
         end)
    end,
 })
