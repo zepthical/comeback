@@ -124,35 +124,18 @@ MainTab:CreateToggle({
    end,
 })
 
-local worlds = {
-    ["World 1"] = Vector3.new(15, -400, 0),
-    ["World 2"] = Vector3.new(42, -400, -1048),
-    ["World 3"] = Vector3.new(21, -400, -2004),
-    ["World 4"] = Vector3.new(-6, -400, -3010),
-    ["World 5"] = Vector3.new(-1, -400, -4000),
-    ["World 6"] = Vector3.new(0, -400, -5000),
-    ["World 7"] = Vector3.new(0, -400, -6000),
-    ["World 8"] = Vector3.new(0, -400, -7000),
-    ["World 9"] = Vector3.new(0, -400, -8000),
-    ["World 10"] = Vector3.new(0, -400, -9000),
-}
-
-local worldNames = {}
-
-for name, _ in pairs(worlds) do
-    table.insert(worldNames, name)
+local function GetCurrentWorldValue()
+    local currentWorld = LocalPlayer:FindFirstChild("CurrentWorld")
+    return currentWorld and currentWorld.Value or nil
 end
 
-local Workspace = game:GetService("Workspace")
-
-local selectedWorldName = "World1" -- default world
+local selectedWorldName = "World1"
 
 MainTab:CreateDropdown({
     Name = "World Select (Blatant Farm)",
     Options = {"World1", "World2", "World3", "World4", "World5", "World6", "World7", "World8", "World9", "World10"},
     CurrentOption = {"World1"},
     Callback = function(option)
-        -- Always keep the latest selection
         if typeof(option) == "string" then
             selectedWorldName = option
         elseif typeof(option) == "table" then
@@ -168,18 +151,20 @@ MainTab:CreateToggle({
             while enabled do
                 pcall(function()
                     local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-                    local primaryPart = character.PrimaryPart or character:FindFirstChild("HumanoidRootPart")
-                    if character and primaryPart then
+                    local hrp = character:FindFirstChild("HumanoidRootPart")
+                    local currentWorld = GetCurrentWorldValue()
+
+                    if hrp and selectedWorldName == currentWorld then
                         local worldFolder = Workspace:FindFirstChild(selectedWorldName)
-                        if worldFolder and worldFolder:FindFirstChild("WinPart") then
-                            local winPart = worldFolder.WinPart
+                        if worldFolder then
+                            local winPart = worldFolder:FindFirstChild("WinPart")
                             if winPart and winPart:IsA("BasePart") then
-                                primaryPart.CFrame = CFrame.new(winPart.Position + Vector3.new(0, 0, 0)) -- small offset to avoid clipping
+                                hrp.CFrame = winPart.CFrame + Vector3.new(0, 10, 0)
                             end
                         end
                     end
                 end)
-                task.wait() -- adjust interval as needed
+                task.wait(1)
             end
         end)
     end,
