@@ -131,6 +131,7 @@ local function GetCurrentWorldValue()
 end
 
 local selectedWorldName = "World1"
+local isFarming = false -- track toggle state
 
 MainTab:CreateDropdown({
     Name = "World Select (Blatant Farm)",
@@ -148,21 +149,24 @@ MainTab:CreateDropdown({
 MainTab:CreateToggle({
     Name = "Blatant Farm",
     Callback = function(enabled)
-        task.spawn(function()
-            while enabled do
-                pcall(function()
-                    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-                    local hrp = char:FindFirstChild("HumanoidRootPart")
-                    local world = Workspace:FindFirstChild(selectedWorldName)
-                    local winPart = world and world:FindFirstChild("WinPart")
+        isFarming = enabled -- update toggle state
+        if enabled then
+            task.spawn(function()
+                while isFarming do
+                    pcall(function()
+                        local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+                        local hrp = char:FindFirstChild("HumanoidRootPart")
+                        local world = Workspace:FindFirstChild(selectedWorldName)
+                        local winPart = world and world:FindFirstChild("WinPart")
 
-                    if hrp and winPart then
-                        hrp.CFrame = winPart.CFrame + Vector3.new(0, 10, 0)
-                    end
-                end)
-                task.wait(1)
-            end
-        end)
+                        if hrp and winPart then
+                            hrp.CFrame = winPart.CFrame + Vector3.new(0, 10, 0)
+                        end
+                    end)
+                    task.wait(0.1)
+                end
+            end)
+        end
     end,
 })
 
