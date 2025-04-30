@@ -101,7 +101,7 @@ AutoDig.Value = false
 
 Tabs.MainTab:Toggle({
     Title = "Legit Farm",
-    Default = false,
+    Default = true,
     Callback = function(state) 
         pcall(function()
             AutoDig.Value = state
@@ -297,7 +297,8 @@ local themeDropdown = Tabs.WindowTab:Dropdown({
     Value = nil,
     Values = themeValues,
     Callback = function(theme)
-        WindUI:SetTheme(theme)
+        pcall(function()
+        WindUI:SetTheme(theme) end)
     end
 })
 themeDropdown:Select(WindUI:GetCurrentTheme())
@@ -305,7 +306,8 @@ themeDropdown:Select(WindUI:GetCurrentTheme())
 local ToggleTransparency = Tabs.WindowTab:Toggle({
     Title = "Toggle Window Transparency",
     Callback = function(e)
-        Window:ToggleTransparency(e)
+        pcall(function()
+        Window:ToggleTransparency(e) end)
     end,
     Value = WindUI:GetTransparency()
 })
@@ -317,16 +319,18 @@ Tabs.WindowTab:Input({
     Title = "Write File Name",
     PlaceholderText = "Enter file name",
     Callback = function(text)
-        fileNameInput = text
+        pcall(function()
+        fileNameInput = text end)
     end
 })
 
 Tabs.WindowTab:Button({
     Title = "Save File",
     Callback = function()
+        pcall(function()
         if fileNameInput ~= "" then
             SaveFile(fileNameInput, { Transparent = WindUI:GetTransparency(), Theme = WindUI:GetCurrentTheme() })
-        end
+        end end)
     end
 })
 
@@ -341,13 +345,15 @@ filesDropdown = Tabs.WindowTab:Dropdown({
     AllowNone = true,
     Values = files,
     Callback = function(selectedFile)
-        fileNameInput = selectedFile
+        pcall(function()
+        fileNameInput = selectedFile end)
     end
 })
 
 Tabs.WindowTab:Button({
     Title = "Load File",
     Callback = function()
+    pcall(function()
         if fileNameInput ~= "" then
             local data = LoadFile(fileNameInput)
             if data then
@@ -362,23 +368,25 @@ Tabs.WindowTab:Button({
                 end
                 if data.Theme then WindUI:SetTheme(data.Theme) end
             end
-        end
+        end end)
     end
 })
 
 Tabs.WindowTab:Button({
     Title = "Overwrite File",
     Callback = function()
+    pcall(function()
         if fileNameInput ~= "" then
             SaveFile(fileNameInput, { Transparent = WindUI:GetTransparency(), Theme = WindUI:GetCurrentTheme() })
-        end
+        end end)
     end
 })
 
 Tabs.WindowTab:Button({
     Title = "Refresh List",
     Callback = function()
-        filesDropdown:Refresh(ListFiles())
+        pcall(function()
+        filesDropdown:Refresh(ListFiles()) end)
     end
 })
 
@@ -401,11 +409,12 @@ function updateTheme()
     WindUI:SetTheme(currentThemeName)
 end
 
-local CreateInput = Tabs.CreateThemeTab:Input({
+Tabs.CreateThemeTab:Input({
     Title = "Theme Name",
     Value = currentThemeName,
     Callback = function(name)
-        currentThemeName = name
+        pcall(function()
+        currentThemeName = name end)
     end
 })
 
@@ -413,7 +422,8 @@ Tabs.CreateThemeTab:Colorpicker({
     Title = "Background Color",
     Default = Color3.fromHex(ThemeAccent),
     Callback = function(color)
-        ThemeAccent = color:ToHex()
+        pcall(function()
+        ThemeAccent = color:ToHex() end)
     end
 })
 
@@ -421,7 +431,8 @@ Tabs.CreateThemeTab:Colorpicker({
     Title = "Outline Color",
     Default = Color3.fromHex(ThemeOutline),
     Callback = function(color)
-        ThemeOutline = color:ToHex()
+        pcall(function()
+        ThemeOutline = color:ToHex() end)
     end
 })
 
@@ -429,7 +440,8 @@ Tabs.CreateThemeTab:Colorpicker({
     Title = "Text Color",
     Default = Color3.fromHex(ThemeText),
     Callback = function(color)
-        ThemeText = color:ToHex()
+        pcall(function()
+        ThemeText = color:ToHex() end)
     end
 })
 
@@ -437,13 +449,15 @@ Tabs.CreateThemeTab:Colorpicker({
     Title = "Placeholder Text Color",
     Default = Color3.fromHex(ThemePlaceholderText),
     Callback = function(color)
-        ThemePlaceholderText = color:ToHex()
+        pcall(function()
+        ThemePlaceholderText = color:ToHex() end)
     end
 })
 
 Tabs.CreateThemeTab:Button({
     Title = "Update Theme",
     Callback = function()
-        updateTheme()
+        pcall(function()
+        updateTheme() end)
     end
 })
