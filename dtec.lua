@@ -37,6 +37,7 @@ local Window = Rayfield:CreateWindow({
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
 
 local MainTab = Window:CreateTab("Main", 4483362458) -- Title, Image
 
@@ -136,10 +137,10 @@ MainTab:CreateDropdown({
     Options = {"World1", "World2", "World3", "World4", "World5", "World6", "World7", "World8", "World9", "World10"},
     CurrentOption = {"World1"},
     Callback = function(option)
-        if typeof(option) == "string" then
-            selectedWorldName = option
-        elseif typeof(option) == "table" then
+        if typeof(option) == "table" then
             selectedWorldName = option[1]
+        else
+            selectedWorldName = option
         end
     end,
 })
@@ -150,18 +151,13 @@ MainTab:CreateToggle({
         task.spawn(function()
             while enabled do
                 pcall(function()
-                    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-                    local hrp = character:FindFirstChild("HumanoidRootPart")
-                    local currentWorld = GetCurrentWorldValue()
+                    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+                    local hrp = char:FindFirstChild("HumanoidRootPart")
+                    local world = Workspace:FindFirstChild(selectedWorldName)
+                    local winPart = world and world:FindFirstChild("WinPart")
 
-                    if hrp and selectedWorldName == currentWorld then
-                        local worldFolder = Workspace:FindFirstChild(selectedWorldName)
-                        if worldFolder then
-                            local winPart = worldFolder:FindFirstChild("WinPart")
-                            if winPart and winPart:IsA("BasePart") then
-                                hrp.CFrame = winPart.CFrame + Vector3.new(0, 10, 0)
-                            end
-                        end
+                    if hrp and winPart then
+                        hrp.CFrame = winPart.CFrame + Vector3.new(0, 10, 0)
                     end
                 end)
                 task.wait(1)
