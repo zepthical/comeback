@@ -1,5 +1,4 @@
-setclipboard("https://discord.gg/dmBzVaRrD3")
--- Load the Rayfield Library
+
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 -- Create the Main Window for PolleserHub
