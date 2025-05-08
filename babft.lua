@@ -47,9 +47,7 @@ local ExtrasTab = Window:CreateTab("Extras", 4483362458)
 local TeleportsTab = Window:CreateTab("Teleports", 4483362458)
 
 -- Add Label to Toggles Tab
-TogglesTab:CreateLabel({
-    Name = "Made by Polleser"
-})
+TogglesTab:CreateLabel("Made by Polleser", "rewind")
 
 -- Toggles Tab: Infinite Jump
 TogglesTab:CreateToggle({
