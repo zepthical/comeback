@@ -88,9 +88,9 @@ local Input = MainTab:CreateInput({
             while _G.fast do
 
 
-local WALK_SPEED = Text -- Adjust the walk speed as desired
+local WALK_SPEED = _G.walkspeed -- Adjust the walk speed as desired
  
-local character = script.Parent
+local character = game.Players.LocalPlayer.Character
 if not character or not character:IsA("Model") or not character:FindFirstChild("Humanoid") then
     return
 end
