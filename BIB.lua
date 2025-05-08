@@ -85,7 +85,7 @@ local Input = MainTab:CreateInput({
    Callback = function(Text)
         pcall(function()
             _G.walkspeed = Text;
-            while _G.fast do
+            while _G.fast do task.wait()
 
 
 local WALK_SPEED = _G.walkspeed -- Adjust the walk speed as desired
