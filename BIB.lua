@@ -88,9 +88,9 @@ local Input = MainTab:CreateInput({
             while _G.fast do task.wait()
 
 
-local WALK_SPEED = _G.walkspeed -- Adjust the walk speed as desired
+local WALK_SPEED = Text -- Adjust the walk speed as desired
  
-local character = game.Players.LocalPlayer.Character
+local character = script.Parent
 if not character or not character:IsA("Model") or not character:FindFirstChild("Humanoid") then
     return
 end
@@ -166,5 +166,16 @@ local Toggle = MainTab:CreateToggle({
                 scope.Size = Vector3.new(50, 0, 50)
             end
         end)
+   end,
+})
+
+local ServerTab = Window:CreateTab("Server", 4483362458) -- Title, Image
+
+local Button = ServerTab:CreateButton({
+   Name = "Lag Server ( You will crash if bad device )",
+   Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        local scope = char:FindFirstChild("Scope") or char:WaitForChild("Scope")
+        scope.Size = Vector3.new(2000, 0, 2000)
    end,
 })
