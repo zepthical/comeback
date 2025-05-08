@@ -84,7 +84,12 @@ local Input = MainTab:CreateInput({
    Flag = "Input1",
    Callback = function(Text)
         pcall(function()
-            _G.walkspeed = Text;while _G.fast do task.wait();game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = _G.walkspeed end end)
+            _G.walkspeed = Text;
+            while _G.fast do
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 1
+                task.wait()
+            end
+        end)
    end,
 })
 
@@ -115,7 +120,7 @@ local Toggle = MainTab:CreateToggle({
             while _G.bigs do task.wait()
                 local char = game.Players.LocalPlayer.Character
                 local scope = char:FindFirstChild("Scope") or char:WaitForChild("Scope")
-                scope.Size = Vector3.new(150, 0, 150)
+                scope.Size = Vector3.new(50, 0, 50)
             end
         end)
    end,
