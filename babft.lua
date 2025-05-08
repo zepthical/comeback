@@ -1,4 +1,5 @@
-
+setclipboard("https://discord.gg/dmBzVaRrD3")
+-- Load the Rayfield Library
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 -- Create the Main Window for PolleserHub
@@ -58,6 +59,7 @@ TogglesTab:CreateToggle({
     Flag = "InfiniteJump",
     Callback = function(value)
         getgenv().inf = value
+        pcall(function()
         spawn(function()
             while getgenv().inf do
                 if not getgenv().inf then break end
@@ -68,7 +70,7 @@ TogglesTab:CreateToggle({
                 end)
                 wait()
             end
-        end)
+        end) end)
     end
 })
 
@@ -83,6 +85,7 @@ TogglesTab:CreateToggle({
         local penguin, gold = workspace:WaitForChild("ChangeCharacter"), workspace:WaitForChild("ClaimRiverResultsGold")
         local client = game.Players.LocalPlayer
 
+        pcall(function()
         _G.Busy = value
         while _G.Busy do
             local bodyVelocity = Instance.new("BodyVelocity")
@@ -113,7 +116,7 @@ TogglesTab:CreateToggle({
 
             client.Character:Remove()
             repeat wait() until client.Character and client.Character:FindFirstChild("HumanoidRootPart")
-        end
+        end end)
     end
 })
 
@@ -124,13 +127,15 @@ TogglesTab:CreateToggle({
     Flag = "WaterGodMode",
     Callback = function(value)
         getgenv().Water = value
+
+        pcall(function()
         game:GetService('RunService').Stepped:Connect(function()
             pcall(function()
                 if getgenv().Water and game.Players.LocalPlayer.Character:FindFirstChild("WaterDetector") then
                     game.Players.LocalPlayer.Character.WaterDetector:Destroy()
                 end
             end)
-        end)
+        end) end)
     end
 })
 
@@ -142,11 +147,13 @@ TogglesTab:CreateToggle({
     Callback = function(value)
         getgenv().Number = 1
         getgenv().Common = value
+
+        pcall(function()
         game:GetService('RunService').Stepped:Connect(function()
             if getgenv().Common then
                 workspace.ItemBoughtFromShop:InvokeServer("Common Chest", getgenv().Number)
             end
-        end)
+        end) end)
     end
 })
 
@@ -158,11 +165,13 @@ TogglesTab:CreateToggle({
     Callback = function(value)
         getgenv().UnCommon = value
         getgenv().Number = 1
+
+        pcall(function()
         game:GetService('RunService').Stepped:Connect(function()
             if getgenv().UnCommon then
                 workspace.ItemBoughtFromShop:InvokeServer("Uncommon Chest", getgenv().Number)
             end
-        end)
+        end) end)
     end
 })
 
@@ -174,11 +183,13 @@ TogglesTab:CreateToggle({
     Callback = function(value)
         getgenv().Rare = value
         getgenv().Number = 1
+        
+        pcall(function()
         game:GetService('RunService').Stepped:Connect(function()
             if getgenv().Rare then
                 workspace.ItemBoughtFromShop:InvokeServer("Rare Chest", getgenv().Number)
             end
-        end)
+        end) end)
     end
 })
 
@@ -190,11 +201,13 @@ TogglesTab:CreateToggle({
     Callback = function(value)
         getgenv().Epic = value
         getgenv().Number = 1
+
+        pcall(function()
         game:GetService('RunService').Stepped:Connect(function()
             if getgenv().Epic then
                 workspace.ItemBoughtFromShop:InvokeServer("Epic Chest", getgenv().Number)
             end
-        end)
+        end) end)
     end
 })
 
@@ -206,11 +219,13 @@ TogglesTab:CreateToggle({
     Callback = function(value)
         getgenv().Legendary = value
         getgenv().Number = 1
+
+        pcall(function()
         game:GetService('RunService').Stepped:Connect(function()
             if getgenv().Legendary then
                 workspace.ItemBoughtFromShop:InvokeServer("Legendary Chest", getgenv().Number)
             end
-        end)
+        end) end)
     end
 })
 
@@ -221,6 +236,8 @@ TogglesTab:CreateToggle({
     Flag = "GetBlocks",
     Callback = function(value)
         _G.RUN = value
+
+        pcall(function()
         spawn(function()
             coroutine.wrap(function()
                 while _G.RUN do
@@ -233,7 +250,7 @@ TogglesTab:CreateToggle({
                     end)()
                 end
             end)()
-        end)
+        end) end)
     end
 })
 
@@ -267,6 +284,8 @@ ExtrasTab:CreateButton({
         local UserRootPart = nil
         local Connection = nil
 
+        
+        pcall(function()
         workspace.Changed:Connect(function()
             Camera = workspace.CurrentCamera
         end)
@@ -342,7 +361,7 @@ ExtrasTab:CreateButton({
                     Connection = RunService.Heartbeat:Connect(Flight)
                 end
             end
-        end)
+        end) end)
 
         StarterGui:SetCore("SendNotification", {
             Title = "Polleser's Car Fly",
@@ -358,8 +377,9 @@ ExtrasTab:CreateInput({
     NumbersOnly = true,
     Flag = "HipHeight",
     Callback = function(value)
-        game.Players.LocalPlayer.Character.Humanoid.HipHeight = tonumber(value)
-    end
+        pcall(function()
+        game.Players.LocalPlayer.Character.Humanoid.HipHeight = tonumber(value) end)
+    end 
 })
 
 -- Extras Tab: Walkspeed Input
@@ -369,7 +389,8 @@ ExtrasTab:CreateInput({
     NumbersOnly = true,
     Flag = "Walkspeed",
     Callback = function(value)
-        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = tonumber(value)
+        pcall(function()
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = tonumber(value) end)
     end
 })
 
@@ -380,7 +401,8 @@ ExtrasTab:CreateInput({
     NumbersOnly = true,
     Flag = "JumpPower",
     Callback = function(value)
-        game.Players.LocalPlayer.Character.Humanoid.JumpPower = tonumber(value)
+        pcall(function()
+        game.Players.LocalPlayer.Character.Humanoid.JumpPower = tonumber(value) end)
     end
 })
 
@@ -388,21 +410,24 @@ ExtrasTab:CreateInput({
 ExtrasTab:CreateButton({
     Name = "Fox Morph",
     Callback = function()
-        workspace.ChangeCharacter:FireServer("FoxCharacter")
+        pcall(function()
+        workspace.ChangeCharacter:FireServer("FoxCharacter") end)
     end
 })
 
 ExtrasTab:CreateButton({
     Name = "Penguin Morph",
     Callback = function()
-        workspace.ChangeCharacter:FireServer("PenguinCharacter")
+        pcall(function()
+        workspace.ChangeCharacter:FireServer("PenguinCharacter") end)
     end
 })
 
 ExtrasTab:CreateButton({
     Name = "Chicken Morph",
     Callback = function()
-        workspace.ChangeCharacter:FireServer("ChickenCharacter")
+        pcall(function()
+        workspace.ChangeCharacter:FireServer("ChickenCharacter") end)
     end
 })
 
@@ -419,11 +444,12 @@ ExtrasTab:CreateButton({
     Name = "Anti-AFK",
     Callback = function()
         wait(3)
+        pcall(function()
         local VirtualUser = game:GetService('VirtualUser')
         game:GetService('Players').LocalPlayer.Idled:Connect(function()
             VirtualUser:CaptureController()
             VirtualUser:ClickButton2(Vector2.new())
-        end)
+        end) end)
     end
 })
 
@@ -431,6 +457,7 @@ ExtrasTab:CreateButton({
 ExtrasTab:CreateButton({
     Name = "Anti-LAG",
     Callback = function()
+    pcall(function()
         for _, v in pairs(game:GetService("Workspace"):GetDescendants()) do
             if v:IsA("BasePart") and not v.Parent:FindFirstChild("Humanoid") then
                 v.Material = Enum.Material.SmoothPlastic
@@ -438,7 +465,7 @@ ExtrasTab:CreateButton({
                     v:Destroy()
                 end
             end
-        end
+        end end)
     end
 })
 
@@ -446,71 +473,81 @@ ExtrasTab:CreateButton({
 TeleportsTab:CreateButton({
     Name = "Teleport To Blue",
     Callback = function()
+    pcall(function()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace")["Really blueZone"].CFrame * CFrame.new(0, 5, 0)
-    end
+    end) end
 })
 
 TeleportsTab:CreateButton({
     Name = "Teleport To Black",
     Callback = function()
+    pcall(function()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").BlackZone.CFrame * CFrame.new(0, 5, 0)
-    end
+    end) end
 })
 
 TeleportsTab:CreateButton({
     Name = "Teleport To Magenta",
     Callback = function()
+    pcall(function()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").MagentaZone.CFrame * CFrame.new(0, 5, 0)
-    end
+    end) end
 })
 
 TeleportsTab:CreateButton({
     Name = "Teleport To Red",
     Callback = function()
+    pcall(function()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(221.12088, -9.89999676, -64.0851135, 0.0238732975, -3.54099043e-08, -0.999714971, 3.27503464e-08, 1, -3.46379174e-08, 0.999714971, -3.19140909e-08, 0.0238732975)
-    end
+    end) end
 })
 
 TeleportsTab:CreateButton({
     Name = "Teleport To Yellow",
     Callback = function()
+    pcall(function()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace")["New YellerZone"].CFrame * CFrame.new(0, 5, 0)
-    end
+    end) end
 })
 
 TeleportsTab:CreateButton({
     Name = "Teleport To Green",
     Callback = function()
+        pcall(function()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").CamoZone.CFrame * CFrame.new(0, 5, 0)
-    end
+    end) end
 })
 
 TeleportsTab:CreateButton({
     Name = "Teleport To White",
     Callback = function()
+        pcall(function()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").WhiteZone.CFrame * CFrame.new(0, 5, 0)
-    end
+    end) end
 })
 
 TeleportsTab:CreateButton({
     Name = "Teleport To Void",
     Callback = function()
+        pcall(function()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(math.huge, math.huge, math.huge)
-    end
+    end) end
 })
 
 TeleportsTab:CreateButton({
     Name = "Rejoin",
     Callback = function()
+        pcall(function()
         game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer)
-    end
+    end) end
 })
 
 TeleportsTab:CreateButton({
     Name = "Server Hop",
     Callback = function()
+        pcall(function()
         game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer)
-    end
+    end) end
 })
 
 -- Load Configuration
