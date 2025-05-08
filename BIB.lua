@@ -63,7 +63,7 @@ game:GetService("ReplicatedStorage").SpawnPellet:FireServer(unpack(args))
 end
 
 local Toggle = MainTab:CreateToggle({
-   Name = "Auto bigger",
+   Name = "Auto Bigger",
    CurrentValue = false,
    Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
    Callback = function(Value)
@@ -99,6 +99,24 @@ local Button = MainTab:CreateButton({
             end
         end
 
+        end)
+   end,
+})
+
+_G.bigs = false
+
+local Toggle = MainTab:CreateToggle({
+   Name = "Big Scope",
+   CurrentValue = false,
+   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+        pcall(function()
+            _G.bigs = Value
+            while _G.bigs do task.wait()
+                local char = game.Players.LocalPlayer.Character
+                local scope = char:FindFirstChild("Scope") or char:WaitForChild("Scope")
+                scope.Size = Vector3.new(150, 0, 150)
+            end
         end)
    end,
 })
