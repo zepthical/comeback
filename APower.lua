@@ -1,7 +1,7 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "Anime Power Simulator",
+   Name = "Anime Power Simulator 0.5",
    Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
    LoadingTitle = "Anime Power Simulator",
    LoadingSubtitle = "by Zepthical",
@@ -46,6 +46,18 @@ local events = shared:FindFirstChild("events")
 
 local RemoteEvent = events:FindFirstChild("RemoteEvent")
 
+attack = function()
+    RemoteEvent:FireServer("attack")
+end
+
+spinchamp = function(amount, world)
+    RemoteEvent:FireServer("rollChampion", amount, world)
+end
+
+getquest = function(world)
+    RemoteEvent:FireServer("setQuest", world)
+end
+
 _G.at = false
 
 local Toggle1 = Main:CreateToggle({
@@ -57,7 +69,7 @@ local Toggle1 = Main:CreateToggle({
         
         pcall(function()
         while _G.at do task.wait(0.2)
-            RemoteEvent:FireServer("attack")
+            attack()
         end end)
    end,
 })
@@ -66,7 +78,7 @@ local mob = nil
 
 MobDropdown = Main:CreateDropdown({
     Name = "Select Mob",
-    Options = {}, -- Starts empty, will be filled based on world selection
+    Options = {}, -- Will be updated dynamically
     CurrentOption = "",
     MultipleOptions = false,
     Flag = "MobDropdown",
@@ -76,23 +88,22 @@ MobDropdown = Main:CreateDropdown({
     end,
 })
 
-
--- Assuming 'worlds' is a folder or model containing mobs
 local spawners = workspace:FindFirstChild("spawners")
 if not spawners then
-    warn("Spawners folder not found!")
+    warn("No 'spawners' folder found in Workspace.")
     return
 end
 
+-- Utility function to get spawner (world) names
 local function getSpawnerNames()
     local names = {}
-    for _, child in pairs(spawners:GetChildren()) do
+    for _, child in ipairs(spawners:GetChildren()) do
         table.insert(names, child.Name)
     end
     return names
 end
 
--- Define this ahead to access it in the callback later
+-- Forward declare the MobDropdown so we can access it later
 local MobDropdown
 
 local WorldDropdown = Main:CreateDropdown({
@@ -103,22 +114,27 @@ local WorldDropdown = Main:CreateDropdown({
     Flag = "WorldDropdown",
     Callback = function(selectedWorld)
         local selectedFolder = spawners:FindFirstChild(selectedWorld)
-        if selectedFolder then
-            local mobNames = {}
-            for _, mob in pairs(selectedFolder:GetChildren()) do
-                if mob:IsA("BasePart") and mob.Transparency == 0 then
-                    table.insert(mobNames, mob.Name)
-                end
-            end
+        if not selectedFolder then
+            warn("World folder not found:", selectedWorld)
+            return
+        end
 
-            -- Refresh the mob dropdown with new options
-            if MobDropdown then
-                MobDropdown:Refresh(mobNames)
-                MobDropdown:Set(mobNames[1] or "")
+        -- Get visible mobs
+        local mobNames = {}
+        for _, mob in ipairs(selectedFolder:GetChildren()) do
+            if mob:IsA("BasePart") and mob.Transparency == 0 then
+                table.insert(mobNames, mob.Name)
             end
+        end
+
+        -- Update the MobDropdown
+        if MobDropdown then
+            MobDropdown:Refresh(mobNames)
+            MobDropdown:Set(mobNames[1] or "")
         end
     end,
 })
+
 
 
 looptp = function(x, y, z)
