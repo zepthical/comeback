@@ -62,67 +62,61 @@ local Toggle1 = Main:CreateToggle({
    end,
 })
 
-local spawners = workspace:FindFirstChild("spawners")
-if not spawners then
-    warn("Spawners folder not found in Workspace")
-    return
-end
+local mob = nil
 
--- Collect names of all the spawner folders/objects
-local function getSpawnerNames()
-    local names = {}
-    for _, spawner in pairs(spawners:GetChildren()) do
-        table.insert(names, spawner.Name)
-    end
-    return names
-end
-
--- Create dropdown with spawner names
-local Dropdown = Main:CreateDropdown({
-    Name = "Select World",
-    Options = getSpawnerNames(),
-    CurrentOption = "shinobi world",
+MobDropdown = Main:CreateDropdown({
+    Name = "Select Mob",
+    Options = {}, -- Starts empty, will be filled based on world selection
+    CurrentOption = "",
     MultipleOptions = false,
-    Flag = "Dropdown1",
-    Callback = function(selected)
-        print("Selected world:", selected)
+    Flag = "MobDropdown",
+    Callback = function(selectedMob)
+        mob = selectedMob
+        print("Selected mob:", mob)
     end,
 })
 
 
 -- Assuming 'worlds' is a folder or model containing mobs
-local function getVisibleMobs(world)
-    local mobNames = {}
-    for _, mob in pairs(world:GetChildren()) do
-        if mob:IsA("BasePart") and mob.Transparency == 0 then
-            table.insert(mobNames, mob.Name)
-        end
-    end
-    return mobNames
-end
-
--- Example: select a specific world folder from spawners
-local selectedWorld = workspace.spawners:FindFirstChild("shinobi world") -- Or use the one selected from the world dropdown
-
-if not selectedWorld then
-    warn("Selected world not found")
+local spawners = workspace:FindFirstChild("spawners")
+if not spawners then
+    warn("Spawners folder not found!")
     return
 end
 
--- Get mob names
-local mobNames = getVisibleMobs(selectedWorld)
+local function getSpawnerNames()
+    local names = {}
+    for _, child in pairs(spawners:GetChildren()) do
+        table.insert(names, child.Name)
+    end
+    return names
+end
 
--- Setup dropdown for mobs
-local mob
-local Dropdown = Main:CreateDropdown({
-    Name = "Select Mob",
-    Options = mobNames,
-    CurrentOption = mobNames[1] or "",
+-- Define this ahead to access it in the callback later
+local MobDropdown
+
+local WorldDropdown = Main:CreateDropdown({
+    Name = "Select World",
+    Options = getSpawnerNames(),
+    CurrentOption = "shinobi world",
     MultipleOptions = false,
-    Flag = "Dropdown2", -- Unique flag
-    Callback = function(selected)
-        mob = selected
-        print("Selected mob:", mob)
+    Flag = "WorldDropdown",
+    Callback = function(selectedWorld)
+        local selectedFolder = spawners:FindFirstChild(selectedWorld)
+        if selectedFolder then
+            local mobNames = {}
+            for _, mob in pairs(selectedFolder:GetChildren()) do
+                if mob:IsA("BasePart") and mob.Transparency == 0 then
+                    table.insert(mobNames, mob.Name)
+                end
+            end
+
+            -- Refresh the mob dropdown with new options
+            if MobDropdown then
+                MobDropdown:Refresh(mobNames)
+                MobDropdown:Set(mobNames[1] or "")
+            end
+        end
     end,
 })
 
@@ -155,14 +149,12 @@ local Toggle2 = Main:CreateToggle({
         looptpMob()
 
         if _G.at == true then
-            while _G.at do task.wait()
-                RemoteEvent:FireServer("attack")
-            end
+            local trash = nil
         else
             Rayfield:Notify({
                 Title = "Auto Kill Mob",
                 Content = "You have to enable Auto attack first!",
-                Duration = 0.5,
+                Duration = 1,
                 Image = 4483362458,
             })
         end
