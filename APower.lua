@@ -1,7 +1,7 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "Anime Power Simulator 0.2",
+   Name = "Anime Power Simulator",
    Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
    LoadingTitle = "Anime Power Simulator",
    LoadingSubtitle = "by Zepthical",
@@ -63,52 +63,69 @@ local Toggle1 = Main:CreateToggle({
 })
 
 local spawners = workspace:FindFirstChild("spawners")
-
-local function ispawners(s)
-    for __, s1 in pairs(spawners:GetChildren()) do
-        return s
-    end
+if not spawners then
+    warn("Spawners folder not found in Workspace")
+    return
 end
 
-local worlds = ispawners()
+-- Collect names of all the spawner folders/objects
+local function getSpawnerNames()
+    local names = {}
+    for _, spawner in pairs(spawners:GetChildren()) do
+        table.insert(names, spawner.Name)
+    end
+    return names
+end
 
-local world
-
+-- Create dropdown with spawner names
 local Dropdown = Main:CreateDropdown({
-   Name = "Select World",
-   Options = spawners:GetChildren(),
-   CurrentOption = "shinobi world",
-   MultipleOptions = false,
-   Flag = "Dropdown1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Options)
-        pcall(function()
-        world = Options end)
-   end,
+    Name = "Select World",
+    Options = getSpawnerNames(),
+    CurrentOption = "shinobi world",
+    MultipleOptions = false,
+    Flag = "Dropdown1",
+    Callback = function(selected)
+        print("Selected world:", selected)
+    end,
 })
 
-local function mobs(m)
-    for ___, m in pairs(worlds:GetChildren()) do
-        if m:IsA("BasePart") and m.Transparency == 0 then
-            return m
+
+-- Assuming 'worlds' is a folder or model containing mobs
+local function getVisibleMobs(world)
+    local mobNames = {}
+    for _, mob in pairs(world:GetChildren()) do
+        if mob:IsA("BasePart") and mob.Transparency == 0 then
+            table.insert(mobNames, mob.Name)
         end
     end
+    return mobNames
 end
 
-local mobs = mobs()
+-- Example: select a specific world folder from spawners
+local selectedWorld = workspace.spawners:FindFirstChild("shinobi world") -- Or use the one selected from the world dropdown
 
+if not selectedWorld then
+    warn("Selected world not found")
+    return
+end
+
+-- Get mob names
+local mobNames = getVisibleMobs(selectedWorld)
+
+-- Setup dropdown for mobs
 local mob
-
 local Dropdown = Main:CreateDropdown({
-   Name = "Select Mob",
-   Options = worlds:GetChildren().enemyType,
-   CurrentOption = "zaruka",
-   MultipleOptions = false,
-   Flag = "Dropdown1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Options)
-        pcall(function()
-        mob = Options end)
-   end,
+    Name = "Select Mob",
+    Options = mobNames,
+    CurrentOption = mobNames[1] or "",
+    MultipleOptions = false,
+    Flag = "Dropdown2", -- Unique flag
+    Callback = function(selected)
+        mob = selected
+        print("Selected mob:", mob)
+    end,
 })
+
 
 looptp = function(x, y, z)
     local character = game.Players.LocalPlayer.Character
