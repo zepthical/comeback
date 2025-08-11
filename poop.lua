@@ -129,7 +129,9 @@ local Toggle1 = MainTab:CreateToggle({
    CurrentValue = false,
    Flag = "Toggle1",
    Callback = function(Value)
+        pcall(function()
         loopcharge(Value)
+        end)
    end,
 })
 
@@ -138,7 +140,9 @@ local Toggle2 = MainTab:CreateToggle({
    CurrentValue = false,
    Flag = "Toggle2",
    Callback = function(Value)
+        pcall(function()
         loopPoop(Value)
+        end)
    end,
 })
 
@@ -149,7 +153,9 @@ local Toggle3 = MainTab:CreateToggle({
    CurrentValue = false,
    Flag = "Toggle3",
    Callback = function(Value)
+    pcall(function()
         loopsellhand(Value)
+    end)
    end,
 })
 
@@ -158,7 +164,9 @@ local Toggle4 = MainTab:CreateToggle({
    CurrentValue = false,
    Flag = "Toggle4",
    Callback = function(Value)
+    pcall(function()
         loopsellinv(Value)
+    end)
    end,
 })
 
@@ -171,7 +179,9 @@ local Input1 = VisualTab:CreateInput({
    RemoveTextAfterFocusLost = false,
    Flag = "Input1",
    Callback = function(Text)
+    pcall(function()
         moneychanger(Text)
+    end)
    end,
 })
 
@@ -180,7 +190,9 @@ local Toggle5 = VisualTab:CreateToggle({
    CurrentValue = false,
    Flag = "Toggle5",
    Callback = function(Value)
+    pcall(function()
         mstate = Value
+    end)
    end,
 })
 
