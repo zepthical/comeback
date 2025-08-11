@@ -76,6 +76,8 @@ local function moneychanger(Amount)
     end
 end
 
+pcall(function()
+
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
@@ -183,3 +185,5 @@ local Toggle5 = VisualTab:CreateToggle({
 })
 
 Rayfield:LoadConfiguration()
+
+end)
