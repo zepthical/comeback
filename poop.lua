@@ -126,9 +126,8 @@ local Toggle1 = MainTab:CreateToggle({
    Name = "Auto Charge",
    CurrentValue = false,
    Flag = "Toggle1",
-   Callback = pcall(function(Value)
+   Callback = function(Value)
         loopcharge(Value)
-   end)
    end,
 })
 
@@ -136,9 +135,8 @@ local Toggle2 = MainTab:CreateToggle({
    Name = "Auto Poop",
    CurrentValue = false,
    Flag = "Toggle2",
-   Callback = pcall(function(Value)
+   Callback = function(Value)
         loopPoop(Value)
-   end)
    end,
 })
 
@@ -148,9 +146,8 @@ local Toggle3 = MainTab:CreateToggle({
    Name = "Auto Sell Hand",
    CurrentValue = false,
    Flag = "Toggle3",
-   Callback = pcall(function(Value)
+   Callback = function(Value)
         loopsellhand(Value)
-   end)
    end,
 })
 
@@ -158,9 +155,8 @@ local Toggle4 = MainTab:CreateToggle({
    Name = "Auto Sell Inventory",
    CurrentValue = false,
    Flag = "Toggle4",
-   Callback = pcall(function(Value)
+   Callback = function(Value)
         loopsellinv(Value)
-   end)
    end,
 })
 
@@ -172,9 +168,8 @@ local Input1 = VisualTab:CreateInput({
    PlaceholderText = "Amount",
    RemoveTextAfterFocusLost = false,
    Flag = "Input1",
-   Callback = pcall(function(Text)
+   Callback = function(Text)
         moneychanger(Text)
-   end)
    end,
 })
 
@@ -182,9 +177,8 @@ local Toggle5 = VisualTab:CreateToggle({
    Name = "On/Off Money Changer",
    CurrentValue = false,
    Flag = "Toggle5",
-   Callback = pcall(function(Value)
+   Callback = function(Value)
         mstate = Value
-   end)
    end,
 })
 
