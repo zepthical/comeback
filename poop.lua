@@ -61,21 +61,6 @@ local function loopPoop(state)
     end
 end
 
-local mstate = false
-
-local function moneychanger(Amount)
-    local running = mstate
-
-    local money = Amount
-
-    local ml = player:WaitForChild("leaderstats"):WaitForChild("Money")
-
-    while running do task.wait(0.01)
-        ml.Value = Amount
-        player:WaitForChild("PlayerGui"):WaitForChild("Money/LevelUI"):WaitForChild("LevelDisplayUI"):WaitForChild("MoneyLabel").Text = "$".. Amount
-    end
-end
-
 pcall(function()
 
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
@@ -118,7 +103,7 @@ local Window = Rayfield:CreateWindow({
 })
 
 local MainTab = Window:CreateTab("Main", 4483362458)
-local VisualTab = Window:CreateTab("Visual", 4483362458)
+--local VisualTab = Window:CreateTab("Visual", 4483362458)
 --local PlayerTab = Window:CreateTab("Player", 4483362458)
 --local SettingTab = Window:CreateTab("Settings", 4483362458)
 
@@ -166,32 +151,6 @@ local Toggle4 = MainTab:CreateToggle({
    Callback = function(Value)
     pcall(function()
         loopsellinv(Value)
-    end)
-   end,
-})
-
-local Section2 = VisualTab:CreateSection("Changer")
-
-local Input1 = VisualTab:CreateInput({
-   Name = "Money Changer",
-   CurrentValue = "",
-   PlaceholderText = "Amount",
-   RemoveTextAfterFocusLost = false,
-   Flag = "Input1",
-   Callback = function(Text)
-    pcall(function()
-        moneychanger(Text)
-    end)
-   end,
-})
-
-local Toggle5 = VisualTab:CreateToggle({
-   Name = "On/Off Money Changer",
-   CurrentValue = false,
-   Flag = "Toggle5",
-   Callback = function(Value)
-    pcall(function()
-        mstate = Value
     end)
    end,
 })
