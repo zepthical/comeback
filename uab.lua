@@ -3,29 +3,27 @@ local player = Players.LocalPlayer
 local chr = player.Character or player.CharacterAdded:Wait()
 local hrp = chr:WaitForChild("HumanoidRootPart")
 
--- Get the player's plot
+-- Get the player's plot (retry until found)
 local function getPlot()
-    local maps = workspace:FindFirstChild("Maps")
-    if not maps then return nil end
+    local maps = workspace:WaitForChild("Map")
+    local bases = maps:WaitForChild("Bases")
 
-    local bases = maps:FindFirstChild("Bases")
-    if not bases then return nil end
-
-    for _, v in ipairs(bases:GetChildren()) do
-        local owner = v:FindFirstChild("Owner")
-        if owner and owner.Value == player.Name then
-            return v
+    while true do
+        for _, v in ipairs(bases:GetChildren()) do
+            local owner = v:FindFirstChild("Owner")
+            if owner and owner.Value then
+                -- Check if it's a Player object or just a name string
+                if owner.Value == player or owner.Value == player.Name then
+                    return v
+                end
+            end
         end
+        task.wait(1) -- retry every second until plot is found
     end
-    return nil
 end
 
--- Find the plot
 local plot = getPlot()
-if not plot then
-    warn("No plot found for player")
-    return
-end
+print("✅ Found plot:", plot.Name)
 
 local crateFolder = plot:WaitForChild("Crate")
 
@@ -41,8 +39,7 @@ end
 
 -- Main loop
 while _G.a do
-    task.wait(0.1) -- small delay to avoid overloading
-    
+    task.wait(0.1)
     local currentCrate = getCrate()
     if currentCrate then
         local inside = currentCrate:FindFirstChild("InsideCrate")
