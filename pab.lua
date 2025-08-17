@@ -7,6 +7,6 @@ local poopUI = plrgui:WaitForChild("PoopUI")
 local poopbar = poopUI:WaitForChild("PoopBar")
 local poopArea = poopbar:WaitForChild("PoopArea")
 
-while true do task.Wait()
+while true do task.wait()
     poopArea.Size = UDim2.new(4, 0, 1, 0)
 end
