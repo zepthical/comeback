@@ -3,30 +3,54 @@ local player = Players.LocalPlayer
 local chr = player.Character or player.CharacterAdded:Wait()
 local hrp = chr:WaitForChild("HumanoidRootPart")
 
-function getPlot()
-    if workspace:FindFirstChild("Maps") then
-        if workspace.Maps:FindFirstChild("Bases") then
-            for i, v in pairs(workspace.Maps.Bases:GetChildren()) do
-                if v:FindFirstChild("Owner") and v.Owner.Value == player.Name then
-                    return v
-                end
-            end
+-- Get the player's plot
+local function getPlot()
+    local maps = workspace:FindFirstChild("Maps")
+    if not maps then return nil end
+
+    local bases = maps:FindFirstChild("Bases")
+    if not bases then return nil end
+
+    for _, v in ipairs(bases:GetChildren()) do
+        local owner = v:FindFirstChild("Owner")
+        if owner and owner.Value == player.Name then
+            return v
         end
     end
+    return nil
 end
 
+-- Find the plot
 local plot = getPlot()
-local crate = plot:WaitForChild("Crate")
-
-local function getCrate()
-    for i, v in pairs(crate:GetChildren()) do
-        return v
-    end
+if not plot then
+    warn("No plot found for player")
+    return
 end
 
-while _G.a do task.wait()
+local crateFolder = plot:WaitForChild("Crate")
+
+-- Return the first valid crate
+local function getCrate()
+    for _, v in ipairs(crateFolder:GetChildren()) do
+        if v:FindFirstChild("InsideCrate") then
+            return v
+        end
+    end
+    return nil
+end
+
+-- Main loop
+while _G.a do
+    task.wait(0.1) -- small delay to avoid overloading
+    
     local currentCrate = getCrate()
-    if currentCrate:WaitForChild("InsideCrate") then
-        currentCrate.InsideCrate:WaitForChild("Hit"):FireServer(2000)
+    if currentCrate then
+        local inside = currentCrate:FindFirstChild("InsideCrate")
+        if inside then
+            local hit = inside:FindFirstChild("Hit")
+            if hit then
+                hit:FireServer(2000)
+            end
+        end
     end
 end
