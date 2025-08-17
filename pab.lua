@@ -9,4 +9,5 @@ local poopArea = poopbar:WaitForChild("PoopArea")
 
 while true do task.wait()
     poopArea.Size = UDim2.new(4, 0, 1, 0)
+    poopArea.Position = UDim2.new(0, 0, 0, 0)
 end
