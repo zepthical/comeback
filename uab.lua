@@ -23,7 +23,7 @@ local function getPlot()
 end
 
 local plot = getPlot()
-print("✅ Found plot:", plot.Name)
+print("found plot ", plot.Name)
 
 local crateFolder = plot:WaitForChild("Crate")
 
