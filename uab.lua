@@ -1,3 +1,5 @@
+_G.a = true
+
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local chr = player.Character or player.CharacterAdded:Wait()
