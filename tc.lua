@@ -1,19 +1,8 @@
--- [[ Debug Version ]] --
+-- [[ Print Slot Objects as Code ]] --
 
 local slots = workspace:WaitForChild("Slots")
 
-local function copyToClipboard(text)
-    if setclipboard then
-        setclipboard(text)
-        print("[copyslot] Copied to clipboard with setclipboard")
-    elseif toclipboard then
-        toclipboard(text)
-        print("[copyslot] Copied to clipboard with toclipboard")
-    else
-        warn("[copyslot] No clipboard function found")
-    end
-end
-
+-- helper: format values
 local function formatValue(v)
     local t = typeof(v)
     if t == "string" then
@@ -29,38 +18,27 @@ local function formatValue(v)
     elseif t == "boolean" or t == "number" then
         return tostring(v)
     else
-        return nil -- unsupported
+        return nil
     end
 end
 
+-- turn an instance into code
 local function dumpInstance(inst)
     local lines = {}
     table.insert(lines, 'local obj = Instance.new("' .. inst.ClassName .. '")')
 
-    local props = {}
-    if getproperties then
-        props = getproperties(inst)
-    else
-        -- fallback: common properties
-        for _, prop in ipairs({
-            "Name","Transparency","Anchored","CanCollide",
-            "Material","Reflectance","Size","Position","Orientation",
-            "Color","CFrame","BrickColor","TopSurface","BottomSurface"
-        }) do
-            local ok, val = pcall(function() return inst[prop] end)
-            if ok then
-                props[prop] = val
-            end
-        end
-    end
+    local properties = {
+        "Name","Transparency","Anchored","CanCollide","Material",
+        "Reflectance","Size","Position","Orientation","Color",
+        "CFrame","BrickColor","TopSurface","BottomSurface"
+    }
 
-    for prop, val in pairs(props) do
-        if prop ~= "Parent" then
+    for _, prop in ipairs(properties) do
+        local ok, val = pcall(function() return inst[prop] end)
+        if ok and val ~= nil then
             local str = formatValue(val)
             if str then
                 table.insert(lines, ("obj.%s = %s"):format(prop, str))
-            else
-                table.insert(lines, ("-- skipped %s (unsupported)"):format(prop))
             end
         end
     end
@@ -69,8 +47,9 @@ local function dumpInstance(inst)
     return table.concat(lines, "\n")
 end
 
+-- main function
 local function copyslot(num)
-    print("[copyslot] Starting for slot " .. num)
+    print("[copyslot] Checking Slot" .. num)
 
     local slot = slots:FindFirstChild("Slot" .. num)
     if not slot then
@@ -79,7 +58,6 @@ local function copyslot(num)
     end
 
     local ilva = slot:WaitForChild("Utility"):WaitForChild("IsLoaded")
-    print("[copyslot] Slot found, IsLoaded =", ilva.Value)
     if ilva.Value ~= true then
         warn("[copyslot] Slot" .. num .. " is not loaded.")
         return
@@ -87,34 +65,23 @@ local function copyslot(num)
 
     local obby = slot:FindFirstChild("Obby")
     if not obby then
-        warn("[copyslot] No Obby folder found in Slot" .. num)
+        warn("[copyslot] Slot" .. num .. " has no Obby folder.")
         return
     end
 
-    local children = obby:GetChildren()
-    print("[copyslot] Found " .. #children .. " children in Obby")
-
-    local output = {}
     local function recurse(obj)
-        table.insert(output, dumpInstance(obj))
+        print(dumpInstance(obj))
         for _, child in ipairs(obj:GetChildren()) do
             recurse(child)
         end
     end
 
-    for _, v in ipairs(children) do
+    for _, v in ipairs(obby:GetChildren()) do
         recurse(v)
     end
 
-    if #output == 0 then
-        warn("[copyslot] No objects were dumped!")
-        return
-    end
-
-    local code = table.concat(output, "\n\n")
-    copyToClipboard(code)
-    print("[copyslot] Finished. Dumped " .. #output .. " objects.")
+    print("[copyslot] Done.")
 end
 
--- Usage:
+-- Example:
 -- copyslot(1)
