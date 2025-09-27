@@ -1,8 +1,7 @@
--- [[ Print Slot Objects as Code ]] --
+--[[ Auto-Copy Slot Output in Clipboard Chunks ]]--
 
 local slots = workspace:WaitForChild("Slots")
 
--- helper: format values
 local function formatValue(v)
     local t = typeof(v)
     if t == "string" then
@@ -18,70 +17,63 @@ local function formatValue(v)
     elseif t == "boolean" or t == "number" then
         return tostring(v)
     else
-        return nil
+        return "nil"
     end
 end
 
--- turn an instance into code
 local function dumpInstance(inst)
     local lines = {}
-    table.insert(lines, 'local obj = Instance.new("' .. inst.ClassName .. '")')
+    table.insert(lines, 'local ' .. inst.Name .. ' = Instance.new("' .. inst.ClassName .. '")')
 
-    local properties = {
-        "Name","Transparency","Anchored","CanCollide","Material",
-        "Reflectance","Size","Position","Orientation","Color",
-        "CFrame","BrickColor","TopSurface","BottomSurface"
-    }
-
-    for _, prop in ipairs(properties) do
+    local props = {"Name","Anchored","CanCollide","Transparency","Size","CFrame","Color","Material","Reflectance","Orientation","Position","Rotation","Shape"}
+    for _, prop in ipairs(props) do
         local ok, val = pcall(function() return inst[prop] end)
         if ok and val ~= nil then
             local str = formatValue(val)
             if str then
-                table.insert(lines, ("obj.%s = %s"):format(prop, str))
+                table.insert(lines, ("%s.%s = %s"):format(inst.Name, prop, str))
             end
         end
     end
 
-    table.insert(lines, "obj.Parent = workspace")
+    table.insert(lines, inst.Name .. ".Parent = workspace")
     return table.concat(lines, "\n")
 end
 
--- main function
-local function copyslot(num)
-    print("[copyslot] Checking Slot" .. num)
+local function copyInChunks(str, chunkSize)
+    chunkSize = chunkSize or 150000 -- safe chunk size for setclipboard
+    local len = #str
+    local i = 1
+    local part = 1
 
-    local slot = slots:FindFirstChild("Slot" .. num)
-    if not slot then
-        warn("[copyslot] Slot" .. num .. " not found.")
-        return
+    while i <= len do
+        local chunk = str:sub(i, i + chunkSize - 1)
+        setclipboard(chunk)
+        print(("Copied part %d/%d to clipboard"):format(part, math.ceil(len/chunkSize)))
+        task.wait(1) -- wait so you have time to paste before it gets overwritten
+        i = i + chunkSize
+        part = part + 1
     end
-
-    local ilva = slot:WaitForChild("Utility"):WaitForChild("IsLoaded")
-    if ilva.Value ~= true then
-        warn("[copyslot] Slot" .. num .. " is not loaded.")
-        return
-    end
-
-    local obby = slot:FindFirstChild("Obby")
-    if not obby then
-        warn("[copyslot] Slot" .. num .. " has no Obby folder.")
-        return
-    end
-
-    local function recurse(obj)
-        print(dumpInstance(obj))
-        for _, child in ipairs(obj:GetChildren()) do
-            recurse(child)
-        end
-    end
-
-    for _, v in ipairs(obby:GetChildren()) do
-        recurse(v)
-    end
-
-    print("[copyslot] Done.")
 end
 
--- Example:
--- copyslot(1)
+local function copySlot(slotNumber)
+    local slot = slots:FindFirstChild("Slot"..slotNumber)
+    if not slot then return warn("Slot not found!") end
+
+    local ilva = slot.Utility:FindFirstChild("IsLoaded")
+    if not ilva or not ilva.Value then return warn("Slot not loaded!") end
+
+    local obby = slot:FindFirstChild("Obby")
+    if not obby then return warn("No Obby found in slot") end
+
+    local output = {}
+    for _, child in ipairs(obby:GetChildren()) do
+        table.insert(output, dumpInstance(child))
+    end
+
+    local finalCode = table.concat(output, "\n\n")
+    copyInChunks(finalCode)
+end
+
+-- Example usage:
+-- copySlot(1)
