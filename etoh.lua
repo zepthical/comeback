@@ -1,286 +1,102 @@
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
-local Window = Rayfield:CreateWindow({
-   Name = "Qwirkz Hub - Eternal Towers of Hell",
-   Icon = 81992215231772, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
-   LoadingTitle = "Qwirkz Hub",
-   LoadingSubtitle = "by @qwirkzzy",
-   Theme = "Amethyst", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+local Version = "0.0.1"
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/download/" .. Version .. "/main.lua"))()
 
-   DisableRayfieldPrompts = false,
-   DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
-
-   ConfigurationSaving = {
-      Enabled = true,
-      FolderName = nil, -- Create a custom folder for your hub/game
-      FileName = "Qwirkz Hub [EToH]"
-   },
-
-   Discord = {
-      Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
-      Invite = "qwirkzer", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
-      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
-   },
-
-   KeySystem = false, -- Set this to true to use our key system
-   KeySettings = {
-      Title = "Qwirkz Hub",
-      Subtitle = "Key System",
-      Note = "", -- Use this to tell the user how to get a key
-      FileName = "QwirkzHubKey", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
-      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
-      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
-      Key = {"Admin"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
-   }
+local Window = WindUI:CreateWindow({
+    Title = "Eternal Tower of Hell",
+    Icon = rbxassetid://81992215231772, -- lucide icon. optional
+    Author = "very special scripts", -- optional
 })
 
--- Tabs
-local MainTab = Window:CreateTab("Main", "info")
-local FarmingTab = Window:CreateTab("Farming", "tractor")
-local ToolsTab = Window:CreateTab("Tools", "swords")
-local OtherTab = Window:CreateTab("Other", "info")
+Window:SetBackgroundImage("rbxassetid://81992215231772")
 
--- Main Tab
--- Placeholder Label
-MainTab:CreateLabel("Coming Soon", "circle-help")
-
--- Farming Tab
--- Autowin Section
-FarmingTab:CreateSection("Autowin")
-
--- Tower Selection Input
-local currentInput = ""
-FarmingTab:CreateInput({
-    Name = "Select Tower To Beat",
-    CurrentValue = "",
-    PlaceholderText = "Tower acronym here",
-    RemoveTextAfterFocusLost = false,
-    Flag = "TowerSelecion",
-    Callback = function(Text)
-        -- The function that takes place when the input is changed
-        -- The variable (Text) is a string for the value in the text box
-        currentInput = Text
-    end,
+Window:EditOpenButton({
+    Title = "Open UI",
+    Icon = "monitor",
+    CornerRadius = UDim.new(0,16),
+    StrokeThickness = 2,
+    Color = ColorSequence.new( -- gradient
+        Color3.fromHex("FF0F7B"), 
+        Color3.fromHex("F89B29")
+    ),
+    OnlyMobile = false,
+    Enabled = true,
+    Draggable = true,
 })
 
--- Time Selection Input
-local timeInput = 0
-FarmingTab:CreateInput({
-    Name = "Select Time To Beat",
-    CurrentValue = "0",
-    PlaceholderText = "Leave blank for 0 time",
-    RemoveTextAfterFocusLost = false,
-    Flag = "TimeSelection",
-    Callback = function(Text)
-         timeInput = tonumber(Text) or 0
-         if string.find(Text, "inf") then
+Window:Tag({
+    Title = "v0.0.1",
+    Color = Color3.fromHex("#30ff4cff"),
+    Radius = 0, -- from 0 to 13
+})
+
+Window:Tag({
+    Title = "ETOH",
+    Color = Color3.fromHex("rgba(255, 40, 40, 1)"),
+    Radius = 0, -- from 0 to 13
+})
+
+local MainTab = Window:Tab({
+    Title = "Main",
+    Icon = "info", -- optional
+    Locked = false,
+})
+
+--[[local TeleportTab = Window:Tab({
+    Title = "Teleport",
+    Icon = "bird", -- optional
+    Locked = false,
+})]]
+
+--[[local MiscTab = Window:Tab({
+    Title = "Miscellaneous",
+    Icon = "swords", -- optional
+    Locked = false,
+})]]
+
+local STInput = MainTab:Input({
+    Title = "Select Tower",
+    Desc = "Select Tower to beat",
+    Value = "ToAST",
+    InputIcon = "bird",
+    Type = "Input",
+    Placeholder = "Tower acronym here",
+    Callback = function(input) 
+         currentInput = input
+    end
+})
+
+local TInput = MainTab:Input({
+    Title = "Select Time",
+    Desc = "Select Time to beat",
+    Value = "0",
+    InputIcon = "bird",
+    Type = "Input",
+    Placeholder = "Leave blank for faster",
+    Callback = function(input) 
+         timeInput = tonumber(input) or 0
+         if string.find(input, "inf") then
             timeInput = math.huge
          end
-    end,
+    end
 })
 
--- Beat all towers Button
-FarmingTab:CreateButton({
-    Name = "[NON-SCS] Beat All Towers With Time",
+local BButton = MainTab:Button({
+    Title = "Beat Selected Tower",
+    Desc = "Beat Selected Tower",
+    Locked = false,
     Callback = function()
-        -- The function that takes place when the button is pressed
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/qwirkzer/scripts/refs/heads/main/jtohautowin.lua", true))()(nil, timeInput)
-    end,
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/zepthical/script/refs/heads/main/etoh/jtohautowin.lua", true))()(currentInput, timeInput)
+    end
 })
 
--- Beat Selected Tower Button
-FarmingTab:CreateButton({
-    Name = "[NON-SC] Beat Selected Tower With Time",
+local BATButton = MainTab:Button({
+    Title = "Beat All Towers [ NON-SC ]",
+    Desc = "Beat All Towers Except SoulCrushing",
+    Locked = false,
     Callback = function()
-        -- The function that takes place when the button is pressed
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/qwirkzer/scripts/refs/heads/main/jtohautowin.lua", true))()(currentInput, timeInput)
-    end,
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/zepthical/script/refs/heads/main/etoh/jtohautowin.lua", true))()(nil, timeInput)
+    end
 })
 
--- Manual Win Section
-FarmingTab:CreateSection("Manual Win")
-
--- Placeholder Label
---FarmingTab:CreateLabel("Coming Soon", "circle-help")
-
--- Infinity Jump Button
-FarmingTab:CreateButton({
-    Name = "Jump Infinitely [Z]",
-    Callback = function()
-        -- The function that takes place when the button is pressed
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/qwirkzer/scripts/refs/heads/main/infjump.lua", true))()("Z")
-    end,
-})
-
--- Time Reversal Button
-FarmingTab:CreateButton({
-    Name = "Time Reverser [C]",
-    Callback = function()
-        -- The function that takes place when the button is pressed
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/qwirkzer/scripts/refs/heads/main/Flashback.luau", true))()
-    end,
-})
-
--- Godmode Button
-FarmingTab:CreateButton({
-    Name = "Godmode",
-    Callback = function()
-        -- The function that takes place when the button is pressed
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/qwirkzer/scripts/refs/heads/main/GodMode.luau", true))()
-    end,
-})
-
--- Tools Tab
--- Animation Section
-ToolsTab:CreateSection("Animated Tools")
-
--- Helicopter Powers Button
-ToolsTab:CreateButton({
-   Name = "Helicopter Powers",
-   Callback = function()
-      -- The function that takes place when the button is pressed
-      game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
-         loadstring(game:HttpGet("https://raw.githubusercontent.com/qwirkzer/scripts/refs/heads/main/etoh/tools/helicopterpowers.lua", true))()
-      end)
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/qwirkzer/scripts/refs/heads/main/etoh/tools/helicopterpowers.lua", true))()
-   end,
-})
-
--- T-Pose Button
-ToolsTab:CreateButton({
-   Name = "T-Pose",
-   Callback = function()
-      -- The function that takes place when the button is pressed
-      game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
-         loadstring(game:HttpGet("https://raw.githubusercontent.com/qwirkzer/scripts/refs/heads/main/etoh/tools/tpose.lua", true))()
-      end)
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/qwirkzer/scripts/refs/heads/main/etoh/tools/tpose.lua", true))()
-   end,
-})
-
--- Boost Section
-ToolsTab:CreateSection("Boost Items")
-
-local con = nil
-local con2 = nil
-
--- Bypass Boost Item Detection Toggle
-ToolsTab:CreateToggle({
-   Name = "Bypass Boost Item Detection",
-   CurrentValue = false,
-   Flag = "BoostBypass", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Value)
-      -- The function that takes place when the toggle is pressed
-      -- The variable (Value) is a boolean on whether the toggle is true or false
-      print(con, 1)
-      if Value == false then
-         print(con, 1.9)
-         if con then
-            con:Disconnect()
-         end
-         if con2 then
-            con2:Disconnect()
-         end
-         print(con, 2)
-         for _, item in game.Players.LocalPlayer.Backpack:GetChildren() do
-            print(item, 2)
-            item.Name = item.Name:gsub("-nodetect", "")
-         end
-      elseif Value == true then
-         for _, item in game.Players.LocalPlayer.Backpack:GetChildren() do
-            print(item, 1)
-            item.Name = item.Name .. "-nodetect"
-         end
-         con2 = game.Players.LocalPlayer.Backpack.ChildAdded:Connect(function(item)
-            print(item, 2.2)
-            item.Name = item.Name .. "-nodetect"
-         end)
-         print(con, 3)
-         con = game.Players.LocalPlayer.ChildAdded:Connect(function(item)
-            print(item, 3)
-            if item.Name == "Backpack" then
-               print(item, 4)
-               if con2 then
-                  con2:Disconnect()
-               end
-               con2 = item.ChildAdded:Connect(function(item)
-                  print(item, 5)
-                  item.Name = item.Name .. "-nodetect"
-               end)
-            end
-         end)
-         print(con, 4)
-      end
-   end,
-})
-
--- Bootleg Coil Button
-ToolsTab:CreateButton({
-   Name = "Bootleg Coil",
-   Callback = function()
-      -- The function that takes place when the button is pressed
-      game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
-         loadstring(game:HttpGet("https://raw.githubusercontent.com/qwirkzer/scripts/refs/heads/main/etoh/tools/bootlegcoil.lua", true))()
-      end)
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/qwirkzer/scripts/refs/heads/main/etoh/tools/bootlegcoil.lua", true))()
-   end,
-})
-
--- Bootleg Speed Coil Button
-ToolsTab:CreateButton({
-   Name = "Bootleg Speed Coil",
-   Callback = function()
-      -- The function that takes place when the button is pressed
-      game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
-         loadstring(game:HttpGet("https://raw.githubusercontent.com/qwirkzer/scripts/refs/heads/main/etoh/tools/bootlegspeedcoil.lua", true))()
-      end)
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/qwirkzer/scripts/refs/heads/main/etoh/tools/bootlegspeedcoil.lua", true))()
-   end,
-})
-
--- Vertical Mobility Button
-ToolsTab:CreateButton({
-   Name = "Vertical Mobility",
-   Callback = function()
-      -- The function that takes place when the button is pressed
-      game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
-         loadstring(game:HttpGet("https://raw.githubusercontent.com/qwirkzer/scripts/refs/heads/main/etoh/tools/verticalmobility.lua", true))()
-      end)
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/qwirkzer/scripts/refs/heads/main/etoh/tools/verticalmobility.lua", true))()
-   end,
-})
-
--- Other Section
-ToolsTab:CreateSection("Other Tools")
-
--- F3X Button
-ToolsTab:CreateButton({
-    Name = "F3X Building Tools",
-    Callback = function()
-        -- The function that takes place when the button is pressed
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/refs/heads/main/f3x.lua", true))()
-    end,
-})
-
--- TelePort Tool Button
-ToolsTab:CreateButton({
-    Name = "Teleport Tool",
-    Callback = function()
-        -- The function that takes place when the button is pressed
-        game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/qwirkzer/scripts/refs/heads/main/tools/TPTool.luau", true))()
-        end)
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/qwirkzer/scripts/refs/heads/main/tools/TPTool.luau", true))()
-    end,
-})
-
--- Other Tab
-OtherTab:CreateButton({
-    Name = "Exit UI",
-    Callback = function()
-        Rayfield:Destroy()
-    end,
-})
-
-
-Rayfield:LoadConfiguration()
