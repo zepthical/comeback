@@ -1,11 +1,11 @@
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
-local Version = "0.0.1"
+local Version = "1.6.41"
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/download/" .. Version .. "/main.lua"))()
 
 local Window = WindUI:CreateWindow({
     Title = "Eternal Tower of Hell",
-    Icon = rbxassetid://81992215231772, -- lucide icon. optional
+    Icon = "bird", -- lucide icon. optional
     Author = "very special scripts", -- optional
 })
 
@@ -23,18 +23,6 @@ Window:EditOpenButton({
     OnlyMobile = false,
     Enabled = true,
     Draggable = true,
-})
-
-Window:Tag({
-    Title = "v0.0.1",
-    Color = Color3.fromHex("#30ff4cff"),
-    Radius = 0, -- from 0 to 13
-})
-
-Window:Tag({
-    Title = "ETOH",
-    Color = Color3.fromHex("rgba(255, 40, 40, 1)"),
-    Radius = 0, -- from 0 to 13
 })
 
 local MainTab = Window:Tab({
@@ -99,4 +87,3 @@ local BATButton = MainTab:Button({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/zepthical/script/refs/heads/main/etoh/jtohautowin.lua", true))()(nil, timeInput)
     end
 })
-
